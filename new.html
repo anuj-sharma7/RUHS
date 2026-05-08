@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology & Physics Questions Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent: #3b82f6;
+            --success: #10b981;
+            --error: #ef4444;
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 2rem;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 400px),
+                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.15), transparent 400px);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .stats {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        #questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .question-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            font-size: 0.875rem;
+            letter-spacing: 0.02em;
+        }
+
+        .meta-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .chapter {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .tag-must {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .tag-should {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .q-number {
+            color: var(--text-secondary);
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+
+        .option:hover:not(.answered) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .option.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: #a7f3d0;
+        }
+
+        .option.correct::before {
+            background: var(--success);
+        }
+
+        .option.wrong {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: #fecaca;
+        }
+
+        .option.wrong::before {
+            background: var(--error);
+        }
+
+        .explanation {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: rgba(59, 130, 246, 0.08);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            display: none;
+            color: #bfdbfe;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .explanation.visible {
+            display: block;
+            animation: expandDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes expandDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            .question-card { padding: 1.5rem; }
+            .meta-info { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+
+        /* Tabs and Section Headers */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .section-header {
+            margin: 2rem 0 1rem 0;
+            padding: 1.5rem 2rem;
+            background: rgba(30, 41, 59, 0.8);
+            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .section-header[data-section="biology"] {
+            border-left-color: var(--success);
+        }
+        
+        .section-header[data-section="physics"] {
+            border-left-color: #f59e0b; /* Amber */
+        }
+        
+        .section-header[data-section="chemistry"] {
+            border-left-color: #ec4899; /* Pink */
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Biology, Physics & Chemistry Mock Test</h1>
+            <div class="stats" id="stats-display">Loading questions...</div>
+            <div class="tabs">
+                <button class="tab-btn active" data-target="all">All Questions</button>
+                <button class="tab-btn" data-target="biology">Biology Section</button>
+                <button class="tab-btn" data-target="physics">Physics Section</button>
+                <button class="tab-btn" data-target="chemistry">Chemistry Section</button>
+            </div>
+            <div class="controls">
+                <button class="btn" id="reveal-all">Reveal All Answers</button>
+                <button class="btn btn-primary" id="reset-all">Reset All</button>
+            </div>
+        </header>
+
+        <div id="questions-container">
+            <!-- Questions will be injected here via JS -->
+        </div>
+    </div>
+
+    <script>
+        const bio_questions = [
+        {"q":"Cell theory was proposed by:","o":["Darwin & Lamarck","Schleiden & Schwann","Virchow & Koch","Watson & Crick"],"a":1,"e":"Schleiden (1838) & Schwann (1839) proposed cell theory. Virchow added 'Omnis cellula e cellula'.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Who coined the term 'cell'?","o":["Robert Hooke","Leeuwenhoek","Robert Brown","Purkinje"],"a":0,"e":"Robert Hooke (1665) saw cork cells under microscope and named them 'cells'.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Powerhouse of cell is:","o":["Nucleus","Ribosome","Mitochondria","Golgi body"],"a":2,"e":"Mitochondria produces ATP via cellular respiration — hence called powerhouse.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Protein synthesis occurs at:","o":["Mitochondria","Ribosome","Lysosome","Centrosome"],"a":1,"e":"Ribosomes are site of protein synthesis (translation). Called 'factories of protein'.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Suicidal bag of cell is:","o":["Ribosome","Golgi body","Lysosome","Peroxisome"],"a":2,"e":"Lysosomes contain hydrolytic enzymes — called 'suicidal bags'. Can digest cell organelles.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Cell wall is absent in:","o":["Plant cells","Fungal cells","Animal cells","Bacterial cells"],"a":2,"e":"Animal cells lack cell wall. Only have plasma membrane.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Fluid mosaic model of plasma membrane was given by:","o":["Watson & Crick","Singer & Nicolson","Schleiden & Schwann","Robertson"],"a":1,"e":"Singer & Nicolson (1972) proposed fluid mosaic model of cell membrane.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Nucleus was discovered by:","o":["Robert Hooke","Robert Brown","Leeuwenhoek","Purkinje"],"a":1,"e":"Robert Brown (1831) discovered nucleus in orchid cells.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Which organelle is absent in prokaryotes?","o":["Ribosome","Cell wall","Nucleus","Plasma membrane"],"a":2,"e":"Prokaryotes lack membrane-bound nucleus. They have nucleoid instead.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Cristae are found in:","o":["Chloroplast","Mitochondria","Nucleus","ER"],"a":1,"e":"Cristae are shelf-like projections of inner mitochondrial membrane where ATP synthesis occurs.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Grana are found in:","o":["Mitochondria","Ribosome","Chloroplast","Golgi body"],"a":2,"e":"Grana are stacks of thylakoids in chloroplast where light reactions of photosynthesis occur.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"The 70S ribosomes are found in:","o":["Animal cells","Plant cells","Prokaryotes","Fungi"],"a":2,"e":"70S ribosomes (50S+30S) are in prokaryotes. Eukaryotes have 80S (60S+40S) ribosomes.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Tonoplast is the membrane of:","o":["Nucleus","Chloroplast","Vacuole","Mitochondria"],"a":2,"e":"Tonoplast is membrane surrounding central vacuole in plant cells.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Kitchen of the cell:","o":["Mitochondria","Ribosome","Chloroplast","Nucleus"],"a":2,"e":"Chloroplast prepares food via photosynthesis — called kitchen of cell.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Longest cell in human body:","o":["Liver cell","Nerve cell","RBC","Muscle cell"],"a":1,"e":"Nerve cells (neurons) can be over 1 meter long.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"S-phase of cell cycle involves:","o":["Cell growth","DNA replication","Nuclear division","Cytokinesis"],"a":1,"e":"S (Synthesis) phase = DNA replication. G1=growth, G2=preparation, M=mitosis.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Meiosis results in:","o":["2 diploid cells","4 diploid cells","2 haploid cells","4 haploid cells"],"a":3,"e":"Meiosis produces 4 genetically different haploid cells (gametes).","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Crossing over occurs during:","o":["Leptotene","Zygotene","Pachytene","Diplotene"],"a":2,"e":"Crossing over (exchange between homologous chromosomes) occurs during Pachytene.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Chromosomes are made up of:","o":["DNA only","RNA only","DNA and protein","RNA and protein"],"a":2,"e":"Chromosomes = DNA + histone proteins (chromatin).","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Nucleolus is site of synthesis of:","o":["DNA","mRNA","rRNA","tRNA"],"a":2,"e":"Nucleolus synthesizes rRNA. Ribosomes are assembled here.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Osmosis is movement of water from:","o":["High solute to low solute","Low solute to high solute","High conc to low conc","None"],"a":1,"e":"Water moves by osmosis from low solute (high water potential) to high solute concentration.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Cell plate is formed during:","o":["Prophase","Metaphase","Anaphase","Telophase"],"a":3,"e":"Cell plate forms during cytokinesis in telophase in plant cells.","ch":"Cell Biology","tag":"Should Do"},
+        {"q":"Which organelle is self-replicating?","o":["Ribosome","Golgi body","Mitochondria","Lysosome"],"a":2,"e":"Mitochondria have own DNA and ribosomes — can self-replicate.","ch":"Cell Biology","tag":"Should Do"},
+        {"q":"Nucleosome is made of:","o":["DNA only","DNA + 8 histones","RNA + proteins","Lipids"],"a":1,"e":"Nucleosome = 147 bp DNA wrapped around 8 histone proteins (octamer).","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Phagocytosis means:","o":["Taking in liquid","Taking in large solid particles","Expelling waste","Diffusion"],"a":1,"e":"Phagocytosis = engulfing solid particles (cell eating). Pinocytosis = engulfing liquid.","ch":"Cell Biology","tag":"Must Do"},
+        {"q":"Peptide bond links:","o":["Nucleotides","Amino acids","Sugars","Fatty acids"],"a":1,"e":"Peptide bond (-CO-NH-) links amino acids together to form proteins.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Which is a disaccharide?","o":["Glucose","Sucrose","Starch","Cellulose"],"a":1,"e":"Sucrose = glucose + fructose. Lactose = glucose + galactose. Maltose = glucose + glucose.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Enzyme is a:","o":["Lipid","Carbohydrate","Protein","Nucleic acid"],"a":2,"e":"Enzymes are biological catalysts (proteins). Exception: ribozymes (RNA catalysts).","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Which base is present in RNA but not DNA?","o":["Adenine","Guanine","Thymine","Uracil"],"a":3,"e":"RNA has Uracil instead of Thymine. DNA=AGCT, RNA=AGCU.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Chargaff's rule states:","o":["A=G, T=C","A=T, G=C","A=C, T=G","All equal"],"a":1,"e":"Chargaff's rule: A=T (2 H-bonds), G=C (3 H-bonds).","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Glycogen is storage polysaccharide in:","o":["Plants","Fungi","Animals","Bacteria"],"a":2,"e":"Glycogen (animal starch) stored in liver and muscles. Plants store starch.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Which vitamin is water soluble?","o":["Vitamin A","Vitamin D","Vitamin C","Vitamin K"],"a":2,"e":"Vitamins B and C are water soluble. A, D, E, K are fat soluble.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Reducing sugar test is done with:","o":["Iodine","Benedict's/Fehling's solution","Biuret reagent","Sudan III"],"a":1,"e":"Reducing sugars (glucose, fructose) reduce Benedict's/Fehling's → brick-red precipitate.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Iodine test is positive for:","o":["Protein","Fat","Starch","Reducing sugar"],"a":2,"e":"Iodine gives blue-black color with starch (amylose). Used as starch test.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Biuret test is used for:","o":["Starch","Proteins","Fats","Nucleic acids"],"a":1,"e":"Biuret test: purple/violet color with proteins (detects peptide bonds).","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"ATP is a:","o":["Lipid","Nucleotide","Protein","Carbohydrate"],"a":1,"e":"ATP = Adenosine Triphosphate — nucleotide with adenine + ribose + 3 phosphates.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Which nucleotide base is a purine?","o":["Thymine","Cytosine","Uracil","Adenine"],"a":3,"e":"Purines (double ring) = Adenine & Guanine. Pyrimidines (single ring) = C, T, U.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Denaturation of protein:","o":["Destroys primary structure","Disrupts secondary & tertiary structure","Breaks peptide bonds","Removes amino acids"],"a":1,"e":"Denaturation = unfolding. 2° and 3° structures lost. Primary (amino acid sequence) unchanged.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Essential amino acids:","o":["Synthesized by body","Must be taken in diet","Found only in plants","All amino acids"],"a":1,"e":"Essential amino acids (8 in adults) cannot be synthesized by body — must come from food.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Secondary structure of protein is maintained by:","o":["Peptide bonds","Hydrogen bonds","Disulfide bonds","Ionic bonds"],"a":1,"e":"Secondary structure (alpha helix, beta sheet) = hydrogen bonds between peptide groups.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Cellulose is:","o":["Energy storage in plants","Structural in plant cell wall","Energy in animals","Enzyme"],"a":1,"e":"Cellulose is structural polysaccharide in plant cell wall. Cannot be digested by humans.","ch":"Biomolecules","tag":"Must Do"},
+        {"q":"Km value of enzyme represents:","o":["Maximum velocity","Substrate conc at half Vmax","Temperature optimum","pH optimum"],"a":1,"e":"Km = substrate concentration at Vmax/2. Lower Km = higher substrate affinity.","ch":"Biomolecules","tag":"Should Do"},
+        {"q":"Cholesterol belongs to:","o":["Fats","Phospholipids","Steroids","Waxes"],"a":2,"e":"Cholesterol is steroid — precursor of hormones (testosterone, estrogen, cortisol, bile acids).","ch":"Biomolecules","tag":"Should Do"},
+        {"q":"Amphibians of plant kingdom:","o":["Algae","Bryophytes","Pteridophytes","Gymnosperms"],"a":1,"e":"Bryophytes (mosses) called amphibians — need water for fertilization but live on land.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Xylem and phloem first found in:","o":["Bryophyta","Thallophyta","Pteridophyta","Gymnospermae"],"a":2,"e":"Pteridophytes are first vascular plants — have xylem and phloem.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Seeds are produced in:","o":["Algae","Mosses","Ferns","Gymnosperms & Angiosperms"],"a":3,"e":"Spermatophytes (Gymnosperms + Angiosperms) produce seeds.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Funaria is a:","o":["Alga","Liverwort","Moss","Fern"],"a":2,"e":"Funaria (bog moss) is example of Bryophyta class Musci (mosses).","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Pinus belongs to:","o":["Angiosperms","Gymnosperms","Pteridophytes","Bryophytes"],"a":1,"e":"Pinus (pine) is gymnosperm — naked seeds not enclosed in fruit.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Biofertilizer alga:","o":["Spirogyra","Ulva","Anabaena","Chara"],"a":2,"e":"Anabaena (cyanobacterium) fixes nitrogen — used as biofertilizer in rice fields.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"'Agar agar' is obtained from:","o":["Brown algae","Red algae","Green algae","Blue-green algae"],"a":1,"e":"Agar from red algae (Gracilaria, Gelidium). Used in microbiological culture media.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Double fertilization occurs in:","o":["Gymnosperms","Angiosperms","Pteridophytes","Bryophytes"],"a":1,"e":"Double fertilization unique to angiosperms: one sperm+egg=zygote; other+2 polar nuclei=endosperm.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Which is monocot?","o":["Pea","Mango","Wheat","Mustard"],"a":2,"e":"Wheat, rice, maize, onion = monocots. Pea, mango, mustard = dicots.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"First land plants were:","o":["Angiosperms","Gymnosperms","Bryophytes","Pteridophytes"],"a":2,"e":"Bryophytes were first plants to colonize land from aquatic environment.","ch":"Plant Kingdom","tag":"Must Do"},
+        {"q":"Flame cells are excretory organs in:","o":["Earthworm","Cockroach","Planaria","Hydra"],"a":2,"e":"Flame cells (protonephridia) in Platyhelminthes like Planaria.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Water vascular system found in:","o":["Arthropoda","Echinodermata","Mollusca","Annelida"],"a":1,"e":"Water vascular system unique to Echinodermata — used for locomotion and feeding.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Malpighian tubules are excretory organs of:","o":["Earthworm","Cockroach","Planaria","Starfish"],"a":1,"e":"Malpighian tubules = excretory organs of insects (Arthropoda).","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Nematocysts found in:","o":["Sponges","Cnidaria","Platyhelminthes","Annelida"],"a":1,"e":"Nematocysts = stinging cells unique to Cnidaria. Used for prey capture and defense.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Crocodile has:","o":["2-chambered heart","3-chambered heart","4-chambered heart","No heart"],"a":2,"e":"Crocodile is only reptile with 4-chambered heart. Other reptiles have 3-chambered.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Largest phylum in animal kingdom:","o":["Chordata","Mollusca","Arthropoda","Annelida"],"a":2,"e":"Arthropoda (~75% of all animal species) — insects, crustaceans, arachnids.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Mammary glands are modified:","o":["Sweat glands","Sebaceous glands","Tear glands","Salivary glands"],"a":0,"e":"Mammary glands are modified sweat glands — secrete milk.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Hermaphrodites have:","o":["Asexual reproduction","Both male & female organs","Change sex","Budding"],"a":1,"e":"Hermaphrodites have both male and female reproductive organs e.g. earthworm, tapeworm, leech.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Setae help locomotion in:","o":["Insects","Earthworm","Starfish","Hydra"],"a":1,"e":"Setae are chitinous bristles in earthworm helping locomotion by gripping soil.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Open circulatory system found in:","o":["Earthworm","Cockroach","Human","Frog"],"a":1,"e":"Cockroach (insects) have open circulatory system — blood bathes organs directly.","ch":"Animal Kingdom","tag":"Must Do"},
+        {"q":"Salivary amylase digests:","o":["Proteins","Fats","Starch","Cellulose"],"a":2,"e":"Salivary amylase (ptyalin) converts starch → maltose. Carb digestion begins in mouth.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Bile is produced by:","o":["Pancreas","Liver","Gallbladder","Small intestine"],"a":1,"e":"Bile produced by liver, stored in gallbladder. Emulsifies fats (no enzymes in bile).","ch":"Digestion","tag":"Must Do"},
+        {"q":"Trypsin is secreted by:","o":["Liver","Stomach","Pancreas","Intestine"],"a":2,"e":"Trypsin, chymotrypsin, pancreatic lipase secreted by pancreas into small intestine.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Absorption mainly occurs in:","o":["Stomach","Large intestine","Small intestine","Esophagus"],"a":2,"e":"Small intestine (jejunum + ileum) is main site of nutrient absorption. Villi increase surface area.","ch":"Digestion","tag":"Must Do"},
+        {"q":"pH of gastric juice is approximately:","o":["7","8","2","5"],"a":2,"e":"Gastric juice is highly acidic (pH ~2) due to HCl. Activates pepsinogen to pepsin.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Fat absorption occurs through:","o":["Blood capillaries","Lacteals","Hepatic portal vein","Arteries"],"a":1,"e":"Fatty acids and glycerol absorbed into lacteals (lymph capillaries) in villi → lymph → blood.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Enterokinase activates:","o":["Pepsinogen","Trypsinogen","Chymotrypsinogen","Procarboxypeptidase"],"a":1,"e":"Enterokinase (intestinal) converts trypsinogen → trypsin, which activates other proenzymes.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Kwashiorkor is caused by deficiency of:","o":["Carbohydrates","Proteins","Fats","Minerals"],"a":1,"e":"Kwashiorkor = protein deficiency. Marasmus = both protein + calorie deficiency.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Villi are projections in:","o":["Stomach lining","Small intestine","Large intestine","Esophagus"],"a":1,"e":"Villi = finger-like projections in small intestine increasing surface area for absorption.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Portal vein carries blood from:","o":["Heart to liver","Gut to liver","Liver to heart","Kidney"],"a":1,"e":"Hepatic portal vein carries nutrient-rich blood from intestines to liver.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Vitamin B12 absorption requires:","o":["Bile salts","Intrinsic factor","Pepsin","HCl"],"a":1,"e":"Vitamin B12 needs intrinsic factor (gastric parietal cells). Deficiency = pernicious anemia.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Jaundice caused by:","o":["Excess glucose","Excess bilirubin in blood","Lack of RBC","Kidney failure"],"a":1,"e":"Jaundice = yellowing of skin/eyes due to excess bilirubin (from RBC breakdown) in blood.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Appendix is part of:","o":["Small intestine","Large intestine","Stomach","Liver"],"a":1,"e":"Appendix (vermiform) is vestigial organ attached to cecum (start of large intestine).","ch":"Digestion","tag":"Must Do"},
+        {"q":"Rennin is found in:","o":["Adults","Infants","Elderly","All ages"],"a":1,"e":"Rennin (chymosin) in gastric juice of infants — coagulates milk protein (casein).","ch":"Digestion","tag":"Must Do"},
+        {"q":"Iron absorption is increased by:","o":["Vitamin C","Vitamin D","Calcium","Tannins"],"a":0,"e":"Vitamin C reduces Fe3+ to Fe2+ which is better absorbed. Tannins (tea) reduce absorption.","ch":"Digestion","tag":"Must Do"},
+        {"q":"Normal breathing rate in adults:","o":["6-8/min","12-16/min","20-25/min","30-35/min"],"a":1,"e":"Normal respiratory rate = 12-16 breaths per minute in healthy adults.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Tidal volume is approximately:","o":["200 mL","500 mL","1000 mL","3000 mL"],"a":1,"e":"Tidal Volume (TV) = ~500mL — air in a normal quiet breath.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Vital capacity = :","o":["TV+IRV+ERV","Total lung volume","Residual volume","TV only"],"a":0,"e":"VC = TV(500)+IRV(3000)+ERV(1100) = ~4600mL. Max air breathed out after max inspiration.","ch":"Breathing","tag":"Must Do"},
+        {"q":"CO2 transported mainly as:","o":["Dissolved in plasma","Carbaminohemoglobin","Bicarbonate (HCO3-)","Equal all"],"a":2,"e":"CO2 transport: 70% as HCO3-, 20% carbaminohemoglobin, 10% dissolved in plasma.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Respiratory center is in:","o":["Cerebrum","Cerebellum","Medulla oblongata","Hypothalamus"],"a":2,"e":"Respiratory rhythmicity center is in medulla oblongata.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Bohr's effect means:","o":["O2 loading at high pH","Hb O2 affinity decreases at high CO2/low pH","CO2 solubility","None"],"a":1,"e":"Bohr effect: high CO2/low pH → reduced Hb O2 affinity → promotes O2 release to tissues.","ch":"Breathing","tag":"Should Do"},
+        {"q":"Asthma is caused by:","o":["Bacterial infection","Bronchospasm (narrowing of bronchioles)","Viral infection","Alveolar damage"],"a":1,"e":"Asthma = narrowing of bronchioles causing wheezing and breathlessness.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Emphysema:","o":["Excess mucus","Destruction of alveolar walls","Fluid in lungs","Collapsed lung"],"a":1,"e":"Emphysema = progressive destruction of alveolar walls → reduced gas exchange surface.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Right lung has how many lobes?","o":["2","3","4","1"],"a":1,"e":"Right lung = 3 lobes. Left lung = 2 lobes (cardiac notch accommodates heart).","ch":"Breathing","tag":"Must Do"},
+        {"q":"Carboxyhemoglobin is formed by:","o":["CO2 + Hb","CO + Hb","O2 + Hb","N2 + Hb"],"a":1,"e":"CO binds Hb 200x more than O2 → carboxyhemoglobin → blocks O2 transport. Deadly.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Alveolar surface area in humans:","o":["10 sq m","50 sq m","70 sq m","200 sq m"],"a":2,"e":"Total alveolar surface ≈ 70 sq m (tennis court size) — massive area for gas exchange.","ch":"Breathing","tag":"Should Do"},
+        {"q":"Trachea is kept open by:","o":["Smooth muscle","Cartilaginous rings","Elastic fibers","Fibrous tissue"],"a":1,"e":"C-shaped cartilaginous rings keep trachea permanently open for air passage.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Silicosis caused by:","o":["Asbestos dust","Silica dust","Coal dust","Cotton dust"],"a":1,"e":"Silicosis = lung fibrosis from prolonged silica dust inhalation (miners, stone cutters).","ch":"Breathing","tag":"Must Do"},
+        {"q":"Diaphragm contracting causes:","o":["Expiration","Inspiration","No effect","Reduced volume"],"a":1,"e":"Inspiration: diaphragm contracts (flattens) → increases thoracic volume → air enters.","ch":"Breathing","tag":"Must Do"},
+        {"q":"Surfactant is produced by:","o":["Type I pneumocytes","Type II pneumocytes","Bronchial cells","Macrophages"],"a":1,"e":"Surfactant (DPPC) from Type II alveolar cells — prevents alveolar collapse.","ch":"Breathing","tag":"Should Do"},
+        {"q":"Normal blood pressure:","o":["80/120","120/80","100/60","140/90"],"a":1,"e":"Normal BP = 120/80 mmHg (systolic/diastolic).","ch":"Circulation","tag":"Must Do"},
+        {"q":"Universal blood donor:","o":["AB","A","B","O"],"a":3,"e":"O is universal donor (no antigens). AB is universal recipient (no antibodies).","ch":"Circulation","tag":"Must Do"},
+        {"q":"Pacemaker of heart:","o":["Pacemaker","AV node","SA node","Bundle of His"],"a":2,"e":"SA node (sinoatrial node) in right atrium generates impulse. Called pacemaker.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Cardiac output = :","o":["HR × BP","HR × Stroke volume","Stroke volume only","BP only"],"a":1,"e":"CO = HR (72/min) × SV (70mL) = ~5040 mL/min ≈ 5L/min.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Heart sounds Lub-Dub due to:","o":["Heart muscle","Closure of valves","Blood flow","Atrial contraction"],"a":1,"e":"Lub (S1) = AV valve closure. Dub (S2) = semilunar valve closure.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Platelets help in:","o":["Immunity","Blood clotting","O2 transport","CO2 transport"],"a":1,"e":"Platelets (thrombocytes) help in hemostasis (blood clotting). Count: 1.5-4 lakh/µL.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Rh factor and erythroblastosis fetalis:","o":["ABO blood group","Rh- mother with Rh+ baby","Rh+ mother Rh- baby","ABO incompatibility"],"a":1,"e":"Erythroblastosis fetalis: Rh- mother sensitized by Rh+ fetal blood → attacks next Rh+ fetus.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Which WBC produces antibodies?","o":["Neutrophils","Monocytes","B-lymphocytes","Eosinophils"],"a":2,"e":"B-lymphocytes → plasma cells → produce antibodies (immunoglobulins).","ch":"Circulation","tag":"Must Do"},
+        {"q":"Hemophilia is due to deficiency of:","o":["Platelets","Clotting factor VIII or IX","Vitamin K","Iron"],"a":1,"e":"Hemophilia A = factor VIII deficiency. Hemophilia B = factor IX. X-linked recessive.","ch":"Circulation","tag":"Must Do"},
+        {"q":"RBC lifespan:","o":["30 days","90 days","120 days","365 days"],"a":2,"e":"RBC lifespan = 120 days. Destroyed in spleen (graveyard of RBC).","ch":"Circulation","tag":"Must Do"},
+        {"q":"Normal RBC count in males:","o":["2-3 million/µL","4.5-5.5 million/µL","7-8 million/µL","1 million/µL"],"a":1,"e":"Normal RBC: Males = 4.5-5.5 million/µL. Females = 4.0-5.0 million/µL.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Anemia caused by:","o":["Excess RBC","Low hemoglobin/RBC","Excess WBC","Excess platelets"],"a":1,"e":"Anemia = reduced Hb or RBC count → reduced O2 carrying capacity.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Leukemia is cancer of:","o":["RBC","Platelets","WBC","Plasma"],"a":2,"e":"Leukemia = cancer of WBC — uncontrolled proliferation of leukocytes.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Spleen is called 'graveyard of RBC' because:","o":["RBC made here","Old RBC destroyed here","RBC stored here","RBC repaired"],"a":1,"e":"Spleen destroys old RBCs after 120 days and recycles iron from hemoglobin.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Largest artery in body:","o":["Pulmonary artery","Coronary artery","Aorta","Carotid artery"],"a":2,"e":"Aorta is largest artery (~2.5cm) — carries oxygenated blood from left ventricle to body.","ch":"Circulation","tag":"Must Do"},
+        {"q":"AV valves of heart:","o":["Aortic and pulmonary","Mitral and tricuspid","Mitral and aortic","Tricuspid and pulmonary"],"a":1,"e":"AV valves: Mitral (bicuspid, left) + Tricuspid (right). Prevent backflow ventricle→atria.","ch":"Circulation","tag":"Must Do"},
+        {"q":"Functional unit of kidney:","o":["Ureter","Nephron","Urethra","Glomerulus"],"a":1,"e":"Nephron is structural and functional unit. Each kidney has ~1 million nephrons.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Urine formation:","o":["Filtration only","Reabsorption only","Filtration+reabsorption+secretion","Secretion only"],"a":2,"e":"Urine: Glomerular filtration → tubular reabsorption → tubular secretion.","ch":"Excretion","tag":"Must Do"},
+        {"q":"GFR is normally:","o":["25 mL/min","125 mL/min","500 mL/min","1000 mL/min"],"a":1,"e":"Normal GFR = 125mL/min = 180L/day. Only ~1.5L urine produced (rest reabsorbed).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Main nitrogenous waste in humans:","o":["Ammonia","Urea","Uric acid","Creatinine"],"a":1,"e":"Humans are ureotelic — urea is main waste (less toxic, water soluble).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Urea is synthesized in:","o":["Kidney","Liver","Spleen","Intestine"],"a":1,"e":"Urea produced in liver via ornithine (urea) cycle from NH3 + CO2.","ch":"Excretion","tag":"Must Do"},
+        {"q":"ADH acts on:","o":["Glomerulus","Proximal tubule","Distal tubule & collecting duct","Loop of Henle"],"a":2,"e":"ADH promotes water reabsorption in distal tubule and collecting duct → concentrated urine.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Renin secreted by:","o":["Adrenal cortex","JG cells of kidney","Posterior pituitary","Liver"],"a":1,"e":"Renin from JG (juxtaglomerular) cells in response to low BP → RAAS → aldosterone.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Glucose in urine indicates:","o":["Normal","Diabetes mellitus","Kidney stone","UTI"],"a":1,"e":"Glucosuria = glucose in urine. Indicates diabetes mellitus (blood glucose exceeds renal threshold).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Gout caused by excess:","o":["Urea","Uric acid","Creatinine","Ammonia"],"a":1,"e":"Gout = hyperuricemia → uric acid deposits in joints (especially big toe).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Bowman's capsule surrounds:","o":["Loop of Henle","Glomerulus","Distal tubule","Collecting duct"],"a":1,"e":"Bowman's capsule = cup-shaped structure around glomerulus. Receives filtrate.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Aldosterone promotes:","o":["K+ reabsorption","Na+ reabsorption in DCT (increases BP)","Water loss","ADH release"],"a":1,"e":"Aldosterone (adrenal cortex) promotes Na+ reabsorption → water retention → raised BP.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Dialysis is done when:","o":["Liver fails","Kidneys fail","Heart fails","Lungs fail"],"a":1,"e":"Hemodialysis in kidney failure — machine filters blood (artificial kidney).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Uremia is:","o":["High blood urea","Low blood urea","Blood in urine","Glucose in urine"],"a":0,"e":"Uremia = abnormally high urea in blood due to kidney failure.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Cystitis is inflammation of:","o":["Kidney","Ureter","Urinary bladder","Urethra"],"a":2,"e":"Cystitis = urinary bladder infection. More common in females (shorter urethra).","ch":"Excretion","tag":"Must Do"},
+        {"q":"Henle's loop important for:","o":["Filtration","Secretion","Urine concentration","Glucose reabsorption"],"a":2,"e":"Loop of Henle (countercurrent mechanism) creates osmotic gradient for urine concentration.","ch":"Excretion","tag":"Must Do"},
+        {"q":"Synapse is junction between:","o":["Two muscles","Two neurons","Nerve and bone","Two bones"],"a":1,"e":"Synapse = junction between two neurons. Nerve impulse transmitted via neurotransmitters.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Acetylcholine is a:","o":["Enzyme","Hormone","Neurotransmitter","Vitamin"],"a":2,"e":"Acetylcholine is major neurotransmitter at NMJ and parasympathetic nervous system.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Cerebrum controls:","o":["Balance","Breathing","Voluntary actions, intelligence, memory","Heartbeat"],"a":2,"e":"Cerebrum controls voluntary movements, intelligence, memory, consciousness.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Cerebellum controls:","o":["Intelligence","Balance and coordination","Breathing","Heartbeat"],"a":1,"e":"Cerebellum coordinates muscular movements and maintains posture and balance.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Hypothalamus regulates:","o":["Vision","Temperature, hunger, thirst, sleep","Hearing","Balance"],"a":1,"e":"Hypothalamus regulates body temperature, hunger, thirst, sleep and controls pituitary gland.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Reflex arc involves:","o":["Brain only","Spinal cord+brain","Receptor→afferent→spinal cord→efferent→effector","Muscles only"],"a":2,"e":"Reflex arc bypasses brain — fast automatic response via spinal cord.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Myelin sheath speeds up nerve impulse in:","o":["Unmyelinated nerves","Myelinated nerves (saltatory conduction)","All nerves","Smooth muscle"],"a":1,"e":"Myelin sheath — impulse jumps between nodes of Ranvier (saltatory conduction) — faster transmission.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Parkinson's due to deficiency of:","o":["Acetylcholine","Dopamine","Serotonin","GABA"],"a":1,"e":"Parkinson's = degeneration of dopaminergic neurons in substantia nigra → tremors, rigidity.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Alzheimer's involves:","o":["Excess dopamine","Amyloid plaques + loss of acetylcholine neurons","Myelin damage","Excess serotonin"],"a":1,"e":"Alzheimer's = amyloid beta plaques + tau tangles + loss of cholinergic neurons → memory loss.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Meninges are:","o":["Brain cells","Three membranes covering brain & spinal cord","Brain blood vessels","Neurons"],"a":1,"e":"Meninges = Dura mater (outer) + Arachnoid (middle) + Pia mater (inner).","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Resting membrane potential of neuron:","o":["0 mV","-70 mV","+70 mV","-40 mV"],"a":1,"e":"Resting membrane potential ≈ -70 mV (inside negative) due to Na+/K+ ATPase pump.","ch":"Neural Control","tag":"Should Do"},
+        {"q":"CSF is found in:","o":["Inside neurons","Subarachnoid space & ventricles","Blood vessels","Peripheral nerves"],"a":1,"e":"CSF fills subarachnoid space and ventricles — cushioning, nutrition, waste removal.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Which lobe contains visual area?","o":["Frontal","Temporal","Parietal","Occipital"],"a":3,"e":"Occipital lobe = visual cortex. Temporal = auditory. Frontal = motor. Parietal = sensory.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Corpus callosum connects:","o":["Two cerebral hemispheres","Cerebrum+cerebellum","Brain+spinal cord","None"],"a":0,"e":"Corpus callosum = band of white matter connecting left and right cerebral hemispheres.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Epilepsy caused by:","o":["Insufficient blood","Abnormal electrical discharges in brain","Meningitis","Myelin damage"],"a":1,"e":"Epilepsy = recurrent seizures due to abnormal neuronal discharges in brain.","ch":"Neural Control","tag":"Must Do"},
+        {"q":"Master gland is:","o":["Thyroid","Adrenal","Pituitary","Hypothalamus"],"a":2,"e":"Pituitary gland is called master gland — controls other endocrine glands via trophic hormones.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Insulin secreted by:","o":["Alpha cells","Beta cells of islets of Langerhans","Delta cells","Liver"],"a":1,"e":"Insulin by Beta (β) cells of islets of Langerhans. Lowers blood glucose.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Glucagon secreted by:","o":["Alpha cells","Beta cells","Delta cells","Liver"],"a":0,"e":"Glucagon from Alpha (α) cells. Raises blood glucose (glycogenolysis).","ch":"Hormones","tag":"Must Do"},
+        {"q":"Adrenaline secreted by:","o":["Adrenal cortex","Adrenal medulla","Thyroid","Pituitary"],"a":1,"e":"Adrenaline (epinephrine) from adrenal medulla. Fight-or-flight hormone.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Thyroid hormone requires:","o":["Calcium","Iron","Iodine","Zinc"],"a":2,"e":"Thyroid hormones (T3, T4) require iodine. Deficiency → goiter. Cretinism in children.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Diabetes insipidus caused by:","o":["Insulin deficiency","ADH deficiency","Glucagon excess","Cortisol deficiency"],"a":1,"e":"Diabetes insipidus = ADH (vasopressin) deficiency → can't concentrate urine → extreme thirst.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Oxytocin released from:","o":["Anterior pituitary","Posterior pituitary","Ovary","Uterus"],"a":1,"e":"Oxytocin (posterior pituitary) causes uterine contractions during labor and milk ejection.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Cretinism caused by:","o":["Excess thyroid in adults","Thyroid deficiency in children","Excess insulin","GH deficiency"],"a":1,"e":"Cretinism = childhood hypothyroidism → stunted physical and mental growth.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Acromegaly caused by:","o":["Excess GH in adults","GH deficiency in children","Excess thyroid","Excess insulin"],"a":0,"e":"Acromegaly = excess GH in adults → enlarged hands, feet, face. Gigantism if in children.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Addison's disease:","o":["Excess cortisol","Adrenocortical hormone deficiency","Excess adrenaline","Insulin deficiency"],"a":1,"e":"Addison's = hyposecretion of adrenal cortical hormones → weakness, hypotension.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Cushing's syndrome:","o":["Excess cortisol","Cortisol deficiency","Excess insulin","Aldosterone deficiency"],"a":0,"e":"Cushing's = hypercortisolism → moon face, buffalo hump, central obesity, hypertension.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Prolactin stimulates:","o":["Ovulation","Milk production","Uterine contraction","Bone growth"],"a":1,"e":"Prolactin (PRL, anterior pituitary) stimulates milk production (lactogenesis).","ch":"Hormones","tag":"Must Do"},
+        {"q":"Testosterone produced by:","o":["Adrenal gland","Leydig cells of testis","Sertoli cells","Anterior pituitary"],"a":1,"e":"Testosterone from Leydig (interstitial) cells of testis under LH stimulation.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Melatonin secreted by:","o":["Pineal gland","Thymus","Hypothalamus","Pituitary"],"a":0,"e":"Melatonin from pineal gland regulates circadian rhythm. Increases at night.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Which is a steroid hormone?","o":["Insulin","Adrenaline","Cortisol","GH"],"a":2,"e":"Cortisol (and all adrenocortical + sex hormones) are steroid — derived from cholesterol.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Graves' disease:","o":["Hypothyroidism","Autoimmune hyperthyroidism","Iodine deficiency","Excess cortisol"],"a":1,"e":"Graves' disease = autoimmune hyperthyroidism → exophthalmos, goiter.","ch":"Hormones","tag":"Must Do"},
+        {"q":"Second messenger in hormone action:","o":["Hormone itself","cAMP","RNA","Protein"],"a":1,"e":"cAMP (cyclic AMP) is second messenger for many peptide hormones (adrenaline, glucagon).","ch":"Hormones","tag":"Should Do"},
+        {"q":"Thyroxine controls metamorphosis in:","o":["Insects","Frogs","Fishes","Birds"],"a":1,"e":"Thyroxine controls metamorphosis in amphibians (tadpole → frog).","ch":"Hormones","tag":"Must Do"},
+        {"q":"Fertilization in humans occurs in:","o":["Uterus","Ovary","Fallopian tube","Cervix"],"a":2,"e":"Fertilization occurs in ampullary region of fallopian tube (oviduct).","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Human gestation period:","o":["6 months","9 months (38-40 weeks)","12 months","3 months"],"a":1,"e":"Human gestation ≈ 280 days (40 weeks, ~9 months) from last menstrual period.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Corpus luteum secretes:","o":["Estrogen only","Progesterone + estrogen","FSH","LH"],"a":1,"e":"Corpus luteum (from ruptured follicle) secretes progesterone + estrogen to maintain pregnancy.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"hCG is produced by:","o":["Anterior pituitary","Corpus luteum","Placenta (trophoblast)","Ovary"],"a":2,"e":"hCG by trophoblast of placenta. Detected in pregnancy tests. Maintains corpus luteum.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Vasectomy involves cutting of:","o":["Urethra","Vas deferens","Epididymis","Seminal vesicle"],"a":1,"e":"Vasectomy = male sterilization — vas deferens cut and tied.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"IVF stands for:","o":["In Vivo Fertilization","In Vitro Fertilization","Internal Vaccination","Inverted Vascular Filtration"],"a":1,"e":"IVF = egg fertilized in lab, embryo transferred to uterus (test tube baby).","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Menstrual cycle length:","o":["14 days","21 days","28 days","35 days"],"a":2,"e":"Normal menstrual cycle = 28 days. Ovulation on day 14. Menstruation days 1-5.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Blastocyst implants in:","o":["Fallopian tube","Cervix","Uterine wall (endometrium)","Ovary"],"a":2,"e":"Blastocyst implants in endometrium at ~day 6-7 after fertilization.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Amniocentesis used for:","o":["Treating infertility","Detecting chromosomal disorders in fetus","Contraception","Abortion"],"a":1,"e":"Amniocentesis = prenatal test sampling amniotic fluid to detect chromosomal disorders.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Morula is:","o":["16-cell solid embryo","Fertilized egg","8-cell stage","Blastocyst"],"a":0,"e":"Morula = solid ball of ~16 cells from cleavage. Before: 2, 4, 8-cell stages.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Colostrum contains:","o":["No nutrients","Rich in IgA antibodies + proteins","Only lactose","Only water"],"a":1,"e":"Colostrum (first milk) rich in IgA antibodies + proteins — provides passive immunity.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Identical twins from:","o":["Two eggs + two sperms","One egg + two sperms","One fertilized egg that splits","Two eggs + one sperm"],"a":2,"e":"Monozygotic (identical) twins = one zygote splits. Dizygotic = two separate eggs.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Normal sperm count:","o":["<10 million/mL","≥15-20 million/mL","100 million/mL","1 million/mL"],"a":1,"e":"Normal sperm count ≥15-20 million/mL. Below 15 = oligospermia. Zero = azoospermia.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Spermatogenesis occurs in:","o":["Epididymis","Seminiferous tubules","Vas deferens","Interstitial cells"],"a":1,"e":"Spermatogenesis in seminiferous tubules. Maturation in epididymis.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Estrogen produced by:","o":["Corpus luteum only","Ovarian follicle + corpus luteum","Uterus","Placenta only"],"a":1,"e":"Estrogen mainly from ovarian follicle (granulosa cells) + corpus luteum + placenta.","ch":"Reproduction","tag":"Must Do"},
+        {"q":"Mendel's law of segregation:","o":["Genes on chromosomes","Two alleles separate during gamete formation","Genes are independent","Dominant masks recessive"],"a":1,"e":"Law of Segregation: two alleles of gene separate during gamete formation.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Monohybrid cross F2 ratio:","o":["1:2:1","3:1","9:3:3:1","1:1"],"a":1,"e":"Monohybrid F2 phenotypic ratio = 3:1. Genotypic = 1:2:1.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Dihybrid cross F2 ratio:","o":["3:1","1:2:1","9:3:3:1","15:1"],"a":2,"e":"Dihybrid F2 phenotypic ratio = 9:3:3:1 (independent assortment).","ch":"Genetics","tag":"Must Do"},
+        {"q":"Codominance seen in:","o":["Pea height","ABO blood group","Skin color","Eye color"],"a":1,"e":"Codominance: both alleles fully expressed. AB blood group = both A and B antigens.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Incomplete dominance in:","o":["Pea plant","Snapdragon (red×white=pink)","ABO blood","Human skin"],"a":1,"e":"Incomplete dominance: F1 hybrid shows intermediate phenotype. Antirrhinum: Rr → pink.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Down syndrome caused by:","o":["Monosomy 21","Trisomy 21","Deletion 21","Translocation"],"a":1,"e":"Down syndrome = Trisomy 21 (47 chromosomes). Non-disjunction during meiosis.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Turner syndrome karyotype:","o":["47 XXY","45 X0","47 XXX","47 XYY"],"a":1,"e":"Turner syndrome = 45 X0. Female phenotype. Short, infertile, no secondary sex characteristics.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Klinefelter syndrome:","o":["45 X0","47 XYY","47 XXY","46 XX"],"a":2,"e":"Klinefelter = 47 XXY. Male phenotype. Infertile, gynecomastia, small testis.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Sickle cell anemia — mutation type:","o":["Deletion","Point mutation (Glu→Val) in beta globin","Chromosomal","Trisomy"],"a":1,"e":"Sickle cell = single nucleotide change GAG→GTG → Glu→Val in beta-globin.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Barr body is:","o":["Active X","Inactivated X (Lyon hypothesis)","Y chromosome","Part of nucleolus"],"a":1,"e":"Barr body = condensed, inactivated X chromosome. Lyon hypothesis.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Pleiotropy means:","o":["One gene→multiple traits","Multiple genes→one trait","Incomplete dominance","Codominance"],"a":0,"e":"Pleiotropy = single gene affecting multiple phenotypic traits. e.g. Marfan syndrome.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Polygenic inheritance for:","o":["ABO blood group","Single gene traits","Skin color, height","Hemophilia"],"a":2,"e":"Polygenic = multiple genes control one trait. e.g. skin color, height, IQ.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Father determines sex because:","o":["Mother decides","Father's X or Y sperm determines","Both equally","Random"],"a":1,"e":"Y-bearing sperm → boy (XY); X-bearing → girl (XX). Mother always gives X.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Huntington's disease is:","o":["Autosomal recessive","Autosomal dominant","X-linked recessive","Y-linked"],"a":1,"e":"Huntington's = autosomal dominant. Single copy causes disease. Middle age onset.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Hardy-Weinberg equation:","o":["p+q=1","p²+2pq+q²=1","p²+q²=1","2p+2q=1"],"a":1,"e":"H-W: p²+2pq+q²=1. Allele frequencies constant without evolution forces.","ch":"Genetics","tag":"Must Do"},
+        {"q":"Linked genes are on:","o":["Different chromosomes","Same chromosome","Both","None"],"a":1,"e":"Linked genes on same chromosome tend to be inherited together.","ch":"Genetics","tag":"Must Do"},
+        {"q":"DNA double helix proposed by:","o":["Mendel","Meselson & Stahl","Watson & Crick","Hershey & Chase"],"a":2,"e":"Watson & Crick (1953) proposed DNA double helix using X-ray data of Franklin & Wilkins.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"DNA replication is:","o":["Conservative","Semi-conservative","Dispersive","Non-conservative"],"a":1,"e":"DNA replication is semi-conservative (Meselson & Stahl, 1958).","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Transcription:","o":["DNA→DNA","DNA→RNA","RNA→Protein","RNA→DNA"],"a":1,"e":"Transcription = DNA → mRNA. Occurs in nucleus. RNA polymerase catalyzes.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Translation:","o":["DNA→RNA","RNA→DNA","mRNA→Protein","DNA→Protein"],"a":2,"e":"Translation = mRNA → Protein. At ribosomes. tRNA brings amino acids.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Central dogma:","o":["Gene→trait","DNA→RNA→Protein","Protein→RNA→DNA","RNA→DNA→Protein"],"a":1,"e":"Central dogma (Francis Crick): DNA→RNA→Protein.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Start codon:","o":["UAA","UAG","AUG","UGA"],"a":2,"e":"AUG is start codon — codes for Methionine. Only one start codon.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Stop codons:","o":["UAA,UAG,UGA","AUG,UAA,UAG","UGA,AUG,UAA","UAA,AUG,UGA"],"a":0,"e":"Stop codons (terminate translation): UAA, UAG, UGA. Don't code for amino acid.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Genetic code is degenerate means:","o":["One codon→multiple amino acids","Multiple codons→same amino acid","One-to-one","Codons overlap"],"a":1,"e":"Degenerate code = multiple codons can code same amino acid.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Okazaki fragments formed on:","o":["Leading strand","Lagging strand","Both strands","Template"],"a":1,"e":"Okazaki fragments on lagging strand — formed discontinuously during replication.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"DNA fingerprinting developed by:","o":["Watson","Kary Mullis","Alec Jeffreys","Crick"],"a":2,"e":"DNA fingerprinting by Alec Jeffreys (1984). Used in forensics, paternity testing.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"PCR amplifies:","o":["Proteins","Specific DNA segment","All DNA","RNA"],"a":1,"e":"PCR amplifies specific DNA millions of times. Uses Taq polymerase and primers.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Reverse transcription:","o":["RNA→DNA (reverse transcriptase)","DNA→RNA","Protein→RNA","DNA→DNA"],"a":0,"e":"Reverse transcription = RNA→DNA by reverse transcriptase (in HIV/retroviruses).","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"HGP completed in:","o":["1990","1996","2003","2010"],"a":2,"e":"Human Genome Project completed 2003. ~3.2 billion bp, ~20,000-25,000 genes.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Northern blotting detects:","o":["DNA","RNA","Protein","Lipid"],"a":1,"e":"Northern=RNA, Southern=DNA, Western=Protein, Eastern=Lipid.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Promoter in DNA is:","o":["A gene","Start codon","Region where RNA polymerase binds","End of gene"],"a":2,"e":"Promoter = DNA sequence upstream where RNA polymerase binds to start transcription.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Telomeres are:","o":["Centromere region","Repetitive sequences at chromosome ends","Coding sequences","Promoters"],"a":1,"e":"Telomeres = repetitive sequences (TTAGGG) at chromosome ends — prevent degradation.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Lac operon is:","o":["Constitutive","Inducible (by lactose)","Repressible","Post-translational"],"a":1,"e":"Lac operon in E. coli — inducible. Lactose acts as inducer → removes repressor → transcription.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Introns are:","o":["Coding sequences","Non-coding sequences removed during splicing","Exons","Promoters"],"a":1,"e":"Introns = non-coding sequences. Removed during RNA splicing. Exons = coding sequences.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"PCR was invented by:","o":["Watson","Kary Mullis","Jeffreys","Southern"],"a":1,"e":"PCR invented by Kary Mullis (1983). Nobel Prize 1993.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"tRNA anticodon located at:","o":["3' end","5' end","Anticodon loop","D loop"],"a":2,"e":"tRNA anticodon at anticodon loop. Amino acid attaches at 3' CCA end.","ch":"Molecular Biology","tag":"Must Do"},
+        {"q":"Darwin proposed:","o":["Lamarckism","Natural selection theory","Mutation theory","Germplasm theory"],"a":1,"e":"Charles Darwin proposed natural selection (1859, 'On the Origin of Species').","ch":"Evolution","tag":"Must Do"},
+        {"q":"Homologous organs:","o":["Same function, different structure","Same structure, different function","Same structure+function","No relation"],"a":1,"e":"Homologous organs: same basic structure (same origin) but different function. e.g. forelimbs of whale, bat, human.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Analogous organs:","o":["Same structure, different function","Different structure, same function","Same structure+function","Vestigial"],"a":1,"e":"Analogous organs: different structure, same function — convergent evolution. e.g. bird and butterfly wings.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Industrial melanism is example of:","o":["Mutation","Natural selection","Genetic drift","Lamarckism"],"a":1,"e":"Industrial melanism (peppered moth Biston betularia) = natural selection in polluted areas.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Miller-Urey experiment demonstrated:","o":["Human evolution","Synthesis of organic molecules from inorganic (origin of life)","DNA structure","Natural selection"],"a":1,"e":"Miller-Urey (1953) showed amino acids synthesized from inorganic molecules under early Earth conditions.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Hardy-Weinberg principle: allele frequencies:","o":["Always change","Constant in large random-mating populations without evolution forces","Increase over time","Decrease"],"a":1,"e":"H-W equilibrium: no mutation, selection, drift, migration, random mating → constant allele frequencies.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Vestigial organs are:","o":["Fully functional","Remnants of ancestral functional organs","New organs","Homologous organs"],"a":1,"e":"Vestigial organs = degenerate non-functional remnants. e.g. appendix, coccyx, ear muscles.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Adaptive radiation:","o":["Migration","Diverse species from common ancestor to fill niches","Extinction","Mutation"],"a":1,"e":"Adaptive radiation = evolution of diverse species from one ancestor. e.g. Darwin's finches.","ch":"Evolution","tag":"Must Do"},
+        {"q":"First homo to use fire:","o":["Homo sapiens","Homo erectus","Homo habilis","Homo heidelbergensis"],"a":1,"e":"Homo erectus (1.8 mya) — first to use fire, hunt cooperatively, migrate out of Africa.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Genetic drift significant in:","o":["Large populations","Small populations","All populations","No population"],"a":1,"e":"Genetic drift = random change in allele frequencies — greatest in small populations.","ch":"Evolution","tag":"Must Do"},
+        {"q":"Malaria caused by:","o":["Bacteria","Virus","Plasmodium (protozoan)","Fungus"],"a":2,"e":"Malaria by Plasmodium. Transmitted by female Anopheles mosquito.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"AIDS caused by:","o":["HIV","HAV","HBV","HTLV"],"a":0,"e":"AIDS (Acquired Immunodeficiency Syndrome) caused by HIV — attacks CD4+ T cells.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"HIV mainly infects:","o":["B cells","CD4+ T helper cells","NK cells","Neutrophils"],"a":1,"e":"HIV binds CD4 receptor on T helper cells → destroys them → immune suppression.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Typhoid caused by:","o":["Virus","Salmonella typhi","Protozoan","Fungi"],"a":1,"e":"Typhoid by Salmonella typhi bacteria. Spread via contaminated food and water.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"BCG vaccine for:","o":["Polio","Tuberculosis","Typhoid","Hepatitis"],"a":1,"e":"BCG (Bacillus Calmette-Guerin) vaccine — immunity against Tuberculosis.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Dengue transmitted by:","o":["Anopheles","Aedes aegypti","Culex","Sandfly"],"a":1,"e":"Dengue by Aedes aegypti mosquito. Also transmits Chikungunya and Zika.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Filariasis caused by:","o":["Plasmodium","Wuchereria bancrofti","Leishmania","Entamoeba"],"a":1,"e":"Filariasis (elephantiasis) by Wuchereria bancrofti. Transmitted by Culex mosquito.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Active immunity:","o":["Given by antibodies","Body produces own antibodies after exposure","Natural barrier","Innate"],"a":1,"e":"Active immunity = own antibodies produced after infection or vaccination. Long-lasting.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Passive immunity:","o":["Produced by body","Received antibodies from another (maternal/injection)","Long-lasting","Requires vaccination"],"a":1,"e":"Passive immunity = ready-made antibodies received. Short-lived.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"First vaccine discovered by:","o":["Pasteur","Edward Jenner (smallpox 1796)","Koch","Fleming"],"a":1,"e":"Edward Jenner (1796) — first vaccine using cowpox against smallpox.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Anaphylaxis is:","o":["Type I hypersensitivity (severe allergic)","Type IV","Autoimmunity","Immunodeficiency"],"a":0,"e":"Anaphylaxis = severe Type I hypersensitivity. IgE-mediated. Life-threatening.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Autoimmune disease:","o":["Response to foreign antigens","Immune attacks self-tissues","Allergy","Immunodeficiency"],"a":1,"e":"Autoimmunity = immune attacks own cells. e.g. Rheumatoid arthritis, Type 1 diabetes.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Cancer is:","o":["Normal cell division","Uncontrolled cell division","Reduced division","Apoptosis"],"a":1,"e":"Cancer = uncontrolled proliferation forming tumor. Can metastasize.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"ELISA detects:","o":["DNA","Specific proteins/antibodies (e.g. HIV Ab)","Bacteria","Parasites"],"a":1,"e":"ELISA = Enzyme-Linked Immunosorbent Assay. Detects specific proteins or antibodies.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Heroin derived from:","o":["Coca plant","Opium poppy","Cannabis","Ephedra"],"a":1,"e":"Heroin (diacetylmorphine) from morphine from Papaver somniferum (opium poppy).","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Widal test for:","o":["Malaria","Typhoid","Tuberculosis","AIDS"],"a":1,"e":"Widal test detects antibodies against Salmonella typhi to diagnose typhoid.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Kala-azar caused by:","o":["Plasmodium","Trypanosoma","Leishmania donovani","Wuchereria"],"a":2,"e":"Kala-azar (visceral leishmaniasis) by Leishmania donovani. Transmitted by sandfly.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Metastasis is:","o":["Primary tumor","Spread of cancer to distant organs","Cancer cell death","Treatment"],"a":1,"e":"Metastasis = spread of cancer cells via blood/lymph to form secondary tumors.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Tobacco smoke contains:","o":["Nicotine only","Nicotine, tar, CO, carcinogens","Tar only","CO only"],"a":1,"e":"Tobacco: nicotine (addictive), tar (carcinogenic), CO (blocks O2), 4000+ chemicals.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Common cold caused by:","o":["Bacteria","Rhinovirus","Adenovirus","Coronavirus only"],"a":1,"e":"Common cold most often by Rhinovirus. Also coronaviruses, adenoviruses.","ch":"Health & Disease","tag":"Must Do"},
+        {"q":"Curd made using:","o":["Streptococcus","Lactobacillus","Saccharomyces","Rhizobium"],"a":1,"e":"Lactobacillus converts lactose to lactic acid → curd.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Bread made using:","o":["Lactobacillus","Saccharomyces cerevisiae (yeast)","Penicillium","Aspergillus"],"a":1,"e":"Saccharomyces cerevisiae (baker's yeast) — CO2 makes bread rise.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Penicillin discovered by:","o":["Pasteur","Jenner","Alexander Fleming","Koch"],"a":2,"e":"Alexander Fleming (1928) discovered penicillin from Penicillium notatum. First antibiotic.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Biogas mainly:","o":["CO2","Methane (CH4)","Hydrogen","Nitrogen"],"a":1,"e":"Biogas = mainly methane (55-70%). From methanogenic bacteria on animal waste.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Rhizobium used as biofertilizer because:","o":["Dissolves phosphate","Fixes N2 in legume root nodules","Produces hormones","Decomposes organic matter"],"a":1,"e":"Rhizobium fixes N2 in root nodules of legumes (symbiotic).","ch":"Microbes","tag":"Must Do"},
+        {"q":"BOD measures:","o":["O2 in water","Organic pollution in water","Number of microbes","pH of water"],"a":1,"e":"BOD = O2 consumed by microbes to decompose organic matter. High BOD = more pollution.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Cyclosporin A (immunosuppressant) from:","o":["Bacteria","Trichoderma polysporum","Yeast","Algae"],"a":1,"e":"Cyclosporin A from Trichoderma polysporum. Used in organ transplants.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Statin from:","o":["Bacteria","Monascus purpureus","Yeast","Actinomyces"],"a":1,"e":"Statins (lovastatin) from Monascus purpureus. Inhibit cholesterol synthesis.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Swiss cheese holes due to:","o":["Bacteria dying","CO2 by Propionibacterium shermanii","Fungal growth","Manual"],"a":1,"e":"Swiss cheese holes due to CO2 by Propionibacterium shermanii.","ch":"Microbes","tag":"Must Do"},
+        {"q":"SCP stands for:","o":["Plant proteins","Single Cell Protein (microbial biomass)","Synthetic proteins","Animal proteins"],"a":1,"e":"SCP = Single Cell Protein — microbial biomass (yeast, algae, bacteria) as protein source.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Vinegar produced by:","o":["Saccharomyces","Acetobacter aceti","Lactobacillus","Aspergillus"],"a":1,"e":"Acetobacter aceti oxidizes ethanol to acetic acid (vinegar).","ch":"Microbes","tag":"Must Do"},
+        {"q":"Primary sewage treatment:","o":["Anaerobic digestion","Physical removal (filtration/sedimentation)","Chemical treatment","Biological treatment"],"a":1,"e":"Primary sewage treatment = physical — screening, sedimentation. Removes 30-40% BOD.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Streptomycin from:","o":["Penicillium","Streptomyces griseus","Bacillus","Aspergillus"],"a":1,"e":"Streptomycin from Streptomyces griseus. Used against tuberculosis.","ch":"Microbes","tag":"Must Do"},
+        {"q":"Restriction enzymes called:","o":["DNA ligase","Molecular scissors","DNA polymerase","Helicase"],"a":1,"e":"Restriction endonucleases = molecular scissors. Cut DNA at specific palindromic sites.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"First transgenic crop in India:","o":["Golden rice","Bt cotton","Bt brinjal","GM mustard"],"a":1,"e":"Bt cotton was first transgenic crop approved in India (2002) — Bt toxin gene against bollworm.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Golden rice enriched with:","o":["Vitamin C","Beta-carotene (Vitamin A)","Iron","Protein"],"a":1,"e":"Golden rice has beta-carotene genes — designed to address Vitamin A deficiency.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Dolly sheep was:","o":["Transgenic","Cloned by somatic cell nuclear transfer","Natural twin","GMO"],"a":1,"e":"Dolly (1996) = first cloned mammal from somatic cell (mammary gland). Ian Wilmut.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Recombinant human insulin first produced using:","o":["E. coli","Yeast","Hamster cells","Plant cells"],"a":0,"e":"Recombinant human insulin (Humulin) first from E. coli by Genentech (1982).","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Gel electrophoresis separates DNA by:","o":["Color","Size (smaller→farther)","Charge only","Density"],"a":1,"e":"Gel electrophoresis: smaller DNA fragments move faster/farther through agarose.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Hybridoma produces:","o":["Recombinant proteins","Monoclonal antibodies (mAbs)","Vaccines","Hormones"],"a":1,"e":"Hybridoma = B cell + myeloma → produces monoclonal antibodies.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Ti plasmid from:","o":["E. coli","Agrobacterium tumefaciens","Rhizobium","Bacillus"],"a":1,"e":"Ti plasmid from Agrobacterium tumefaciens — used for plant transformation.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Gene gun is used for:","o":["Shooting animals","Introducing DNA into plant cells (biolistics)","DNA extraction","PCR"],"a":1,"e":"Gene gun (biolistics) = gold particles coated with DNA shot at high velocity into plant cells.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"RNAi silences:","o":["DNA replication","Specific gene via dsRNA","Protein synthesis permanently","Cell division"],"a":1,"e":"RNAi = gene silencing using double-stranded RNA that degrades specific mRNA.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Sticky ends in DNA:","o":["Blunt cuts","Single-stranded overhangs after restriction enzyme cut","Double-stranded cuts","Modified bases"],"a":1,"e":"Sticky ends = short single-stranded overhangs — allow annealing with complementary DNA.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"cDNA made from mRNA using:","o":["DNA ligase","Reverse transcriptase","RNA polymerase","Restriction enzyme"],"a":1,"e":"Reverse transcriptase makes cDNA from mRNA. cDNA lacks introns.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"SCID treated by:","o":["Antibiotic","Gene therapy (ADA gene)","Bone marrow","Vaccine"],"a":1,"e":"First successful gene therapy: SCID from ADA deficiency treated by inserting correct ADA gene.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Cry proteins produced by:","o":["Penicillium","Bacillus thuringiensis","E. coli","Streptomyces"],"a":1,"e":"Cry proteins (Bt toxin) from Bacillus thuringiensis. Insecticidal against larvae.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"Bioreactor used for:","o":["Growing plants","Large-scale production using microbes","Chemical synthesis","Gene sequencing"],"a":1,"e":"Bioreactor = vessel for large-scale microbial fermentation of proteins, antibiotics etc.","ch":"Biotechnology","tag":"Must Do"},
+        {"q":"10% law given by:","o":["Lindeman","Odum","Darwin","Elton"],"a":0,"e":"Lindeman (1942) — 10% of energy transferred from one trophic level to next.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Energy flow in ecosystem is:","o":["Cyclic","Unidirectional","Bidirectional","Random"],"a":1,"e":"Energy flows unidirectionally. Unlike nutrients, energy is not recycled — lost as heat.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Eutrophication:","o":["Increase O2 in water","Excess nutrients→algal bloom→O2 depletion","Water purification","Desertification"],"a":1,"e":"Eutrophication = excess N+P in water → algal bloom → O2 depletion → fish death.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Mutualism is:","o":["Both harmed","One benefits, other unaffected","Both benefit","One benefits, other harmed"],"a":2,"e":"Mutualism (+/+) = both species benefit. e.g. lichens (algae+fungi), mycorrhiza.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Pioneer species on bare rock:","o":["Grasses","Lichens","Trees","Mosses"],"a":1,"e":"Lichens = pioneer species on bare rock. Break rock, form soil for future plants.","ch":"Ecology","tag":"Must Do"},
+        {"q":"NPP = :","o":["GPP","GPP-Respiration","GPP+Respiration","GPP×Respiration"],"a":1,"e":"NPP = GPP - Respiration. Energy available for consumers.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Mycorrhiza is:","o":["Parasitic","Mutualistic (fungi+plant roots)","Predation","Competition"],"a":1,"e":"Mycorrhiza = mutualistic fungi+plant roots. Fungi help absorption; plant provides sugars.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Carbon cycle involves:","o":["Photosynthesis only","Photosynthesis+respiration+decomposition+combustion","Respiration only","Decomposition only"],"a":1,"e":"Carbon cycle: photosynthesis, respiration, decomposition, combustion.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Hot spots of biodiversity:","o":["High richness+endemism+threat","Only high richness","Only threatened","Polar regions"],"a":0,"e":"Hot spots = high species richness + high endemism + high threat.","ch":"Ecology","tag":"Must Do"},
+        {"q":"India's biodiversity hotspots:","o":["Western Ghats only","Western Ghats, Himalayas, Indo-Burma, Sundaland","Eastern Ghats","Only Andamans"],"a":1,"e":"India's 4 hotspots: Western Ghats+Sri Lanka, Himalaya, Indo-Burma, Sundaland.","ch":"Ecology","tag":"Must Do"},
+        {"q":"IUCN Red List categories include:","o":["Extinct, Endangered, Vulnerable, Least Concern","Only Endangered","Only Endemic","Only Threatened"],"a":0,"e":"IUCN: Extinct, Extinct in Wild, Critically Endangered, Endangered, Vulnerable, Near Threatened, Least Concern.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Highest productivity ecosystem:","o":["Desert","Grassland","Tropical rainforest","Tundra"],"a":2,"e":"Tropical rainforest has highest NPP (~2200 g/m²/yr).","ch":"Ecology","tag":"Must Do"},
+        {"q":"In vitro conservation uses:","o":["National parks","Seed banks, gene banks, cryopreservation","Wildlife sanctuaries","Biosphere reserves"],"a":1,"e":"Ex situ (off-site) conservation: seed banks, gene banks, tissue culture, cryopreservation, zoos.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Commensalism:","o":["Both benefit","One benefits, other unaffected","One benefits, other harmed","Both harmed"],"a":1,"e":"Commensalism (+/0): one benefits, other unaffected. e.g. orchids on trees.","ch":"Ecology","tag":"Must Do"},
+        {"q":"Ramsar sites are:","o":["Protected forests","Wetlands of international importance","Marine protected areas","Mountains"],"a":1,"e":"Ramsar Convention (1971): wetlands of international importance.","ch":"Ecology","tag":"Must Do"}
+        ];
+
+        const phy_questions = [
+        {"q":"SI unit of force is:","o":["Joule","Newton","Watt","Pascal"],"a":1,"e":"Newton (N) = kg·m/s². Named after Isaac Newton. 1N = force to accelerate 1kg by 1m/s².","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"SI unit of energy is:","o":["Watt","Newton","Joule","Pascal"],"a":2,"e":"Joule (J) = N·m = kg·m²/s². Unit of energy, work, and heat.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"SI unit of power is:","o":["Joule","Newton","Watt","Pascal"],"a":2,"e":"Watt (W) = J/s = kg·m²/s³. Power = rate of doing work.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"SI unit of pressure is:","o":["Newton","Pascal","Bar","Torr"],"a":1,"e":"Pascal (Pa) = N/m². 1 atm = 101325 Pa. Named after Blaise Pascal.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Dimensional formula of velocity is:","o":["[MLT⁻¹]","[LT⁻¹]","[ML²T⁻²]","[MLT⁻²]"],"a":1,"e":"Velocity = displacement/time = m/s → [LT⁻¹]. No mass involved.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Dimensional formula of force is:","o":["[MLT⁻²]","[LT⁻¹]","[ML²T⁻²]","[ML⁻¹T⁻²]"],"a":0,"e":"Force = mass × acceleration = kg × m/s² → [MLT⁻²].","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Dimensional formula of energy/work:","o":["[MLT⁻²]","[LT⁻¹]","[ML²T⁻²]","[ML⁻¹T⁻²]"],"a":2,"e":"Work = Force × distance = N·m = kg·m²/s² → [ML²T⁻²].","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Which is dimensionless?","o":["Force","Strain (ΔL/L)","Pressure","Velocity"],"a":1,"e":"Strain = change in length / original length = dimensionless ratio.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Dimensional formula of pressure:","o":["[MLT⁻²]","[ML⁻¹T⁻²]","[ML²T⁻²]","[LT⁻¹]"],"a":1,"e":"Pressure = Force/Area = N/m² → [MLT⁻²]/[L²] = [ML⁻¹T⁻²].","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"SI unit of electric current:","o":["Volt","Ohm","Ampere","Coulomb"],"a":2,"e":"Ampere (A) is the SI base unit of electric current.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"One light year is unit of:","o":["Time","Speed","Distance","Mass"],"a":2,"e":"Light year = distance light travels in one year ≈ 9.46 × 10¹⁵ m. Unit of distance.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Parsec is unit of:","o":["Time","Astronomical distance","Speed","Mass"],"a":1,"e":"Parsec ≈ 3.086 × 10¹⁶ m ≈ 3.26 light years. Unit of astronomical distance.","ch":"Units & Dimensions","tag":"Should Do"},
+        {"q":"Dimensional formula of momentum:","o":["[MLT⁻²]","[MLT⁻¹]","[ML²T⁻²]","[MLT]"],"a":1,"e":"Momentum = mass × velocity = kg × m/s → [MLT⁻¹].","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Which physical quantity has same dimensions as work?","o":["Force","Torque","Power","Pressure"],"a":1,"e":"Torque = r × F = N·m = [ML²T⁻²]. Same dimensional formula as work/energy.","ch":"Units & Dimensions","tag":"Must Do"},
+        {"q":"Dimensional formula of gravitational constant G:","o":["[M⁻¹L³T⁻²]","[MLT⁻²]","[ML²T⁻²]","[M⁻¹LT⁻²]"],"a":0,"e":"From F = Gm₁m₂/r² → G = Fr²/m₁m₂ → [MLT⁻²][L²]/[M²] = [M⁻¹L³T⁻²].","ch":"Units & Dimensions","tag":"Should Do"},
+        {"q":"Equations of motion are valid for:","o":["Variable acceleration","Uniform acceleration only","Any motion","Circular motion"],"a":1,"e":"v=u+at, s=ut+½at², v²=u²+2as are valid only for uniform (constant) acceleration.","ch":"Motion","tag":"Must Do"},
+        {"q":"A body starts from rest. Using v²=u²+2as with u=0, v=10m/s, a=2m/s². Distance s=?","o":["25 m","50 m","100 m","10 m"],"a":0,"e":"v²=u²+2as → 100=0+2×2×s → s=100/4=25m.","ch":"Motion","tag":"Must Do"},
+        {"q":"Acceleration due to gravity g =","o":["9.8 cm/s²","9.8 m/s²","8.9 m/s²","10 m/s²"],"a":1,"e":"Standard g = 9.8 m/s² ≈ 10 m/s² (for approximation). Acts downward on all objects.","ch":"Motion","tag":"Must Do"},
+        {"q":"A ball is thrown upward with v=20m/s. Maximum height (g=10)?","o":["10 m","20 m","40 m","80 m"],"a":1,"e":"At max height v=0. v²=u²-2gh → 0=400-20h → h=20m.","ch":"Motion","tag":"Must Do"},
+        {"q":"Time for ball thrown up with u=20m/s to return to ground (g=10)?","o":["2 s","4 s","6 s","8 s"],"a":1,"e":"Total time = 2u/g = 2×20/10 = 4s. (Time up = time down).","ch":"Motion","tag":"Must Do"},
+        {"q":"Velocity-time graph slope gives:","o":["Displacement","Velocity","Acceleration","Distance"],"a":2,"e":"Slope of v-t graph = Δv/Δt = acceleration. Area under v-t graph = displacement.","ch":"Motion","tag":"Must Do"},
+        {"q":"Area under velocity-time graph gives:","o":["Acceleration","Speed","Displacement","Force"],"a":2,"e":"Area under v-t graph = displacement. Area under a-t graph = change in velocity.","ch":"Motion","tag":"Must Do"},
+        {"q":"A car accelerates from 0 to 20 m/s in 5s. Acceleration is:","o":["4 m/s²","5 m/s²","10 m/s²","100 m/s²"],"a":0,"e":"a = (v-u)/t = (20-0)/5 = 4 m/s².","ch":"Motion","tag":"Must Do"},
+        {"q":"For a freely falling body (u=0), distance fallen in t seconds:","o":["gt","gt²","½gt²","2gt"],"a":2,"e":"s = ut + ½at² = 0 + ½gt² = ½gt² (u=0 for free fall from rest).","ch":"Motion","tag":"Must Do"},
+        {"q":"Relative velocity of two bodies moving in same direction at v₁ and v₂:","o":["v₁+v₂","v₁-v₂","v₁×v₂","v₁/v₂"],"a":1,"e":"Relative velocity (same direction) = v₁ - v₂. Opposite direction = v₁ + v₂.","ch":"Motion","tag":"Must Do"},
+        {"q":"Projectile has maximum range when projected at angle:","o":["30°","45°","60°","90°"],"a":1,"e":"Maximum range R = u²sin2θ/g → maximum when sin2θ=1 → 2θ=90° → θ=45°.","ch":"Motion","tag":"Must Do"},
+        {"q":"In uniform circular motion, acceleration is directed:","o":["Tangentially","Radially outward","Radially inward (centripetal)","Zero"],"a":2,"e":"Centripetal acceleration = v²/r directed toward center (radially inward).","ch":"Motion","tag":"Must Do"},
+        {"q":"Range of projectile R = u²sin2θ/g. At θ=30°, sin60°=0.866, u=20m/s, g=10:","o":["34.6 m","17.3 m","40 m","20 m"],"a":0,"e":"R = 20²×0.866/10 = 400×0.866/10 = 34.64 m ≈ 34.6m.","ch":"Motion","tag":"Should Do"},
+        {"q":"A body moving in circle of radius r with speed v. Centripetal force =","o":["mv/r","mv²/r","mvr","mv²r"],"a":1,"e":"Centripetal force = mv²/r = mω²r. Directed toward center.","ch":"Motion","tag":"Must Do"},
+        {"q":"At highest point of projectile, vertical velocity is:","o":["Maximum","u (initial)","Zero","g"],"a":2,"e":"At maximum height, vertical component of velocity = 0. Horizontal = ucosθ (unchanged).","ch":"Motion","tag":"Must Do"},
+        {"q":"Newton's first law is also called:","o":["Law of acceleration","Law of inertia","Law of action-reaction","Law of gravitation"],"a":1,"e":"Newton's 1st law = Law of Inertia. Body stays at rest or uniform motion unless external force acts.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Newton's second law: F =","o":["mv","ma","m/a","mv²"],"a":1,"e":"F = ma. Force = mass × acceleration. Unit = Newton (N).","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Newton's third law states:","o":["F=ma","Every action has equal and opposite reaction","Body continues at rest","F=mv"],"a":1,"e":"Newton's 3rd law: For every action there is equal and opposite reaction. Action-reaction pairs.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"A 5kg mass accelerates at 3m/s². Net force =","o":["1.67 N","15 N","8 N","0.6 N"],"a":1,"e":"F = ma = 5 × 3 = 15 N.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Impulse = ","o":["Force × time","Force × distance","Mass × velocity","Force/time"],"a":0,"e":"Impulse = F×t = change in momentum (Δp). Unit = N·s = kg·m/s.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Law of conservation of momentum: In absence of external force, total momentum is:","o":["Zero","Increasing","Constant","Decreasing"],"a":2,"e":"Conservation of momentum: Σp = constant when no external force acts.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"A 60kg man stands in elevator accelerating up at 2m/s². Apparent weight (g=10)?","o":["600 N","720 N","480 N","600 N"],"a":1,"e":"N = m(g+a) = 60(10+2) = 60×12 = 720 N. Apparent weight increases when accelerating up.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Friction depends on:","o":["Speed","Contact area","Normal force and nature of surfaces (μ)","Mass only"],"a":2,"e":"Friction f = μN. Depends on normal force N and coefficient of friction μ. Not on area or speed.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Static friction is always _____ kinetic friction:","o":["Less than","Greater than or equal to","Equal to","Half of"],"a":1,"e":"Static friction (max) ≥ kinetic friction. It's easier to keep sliding than to start sliding.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Rocket propulsion works on:","o":["Newton's 1st law","Newton's 2nd law","Newton's 3rd law","Bernoulli's principle"],"a":2,"e":"Rocket: gases expelled backward (action) → rocket moves forward (reaction). Newton's 3rd law.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"A gun recoils when fired — this is due to:","o":["Newton's 1st law","Newton's 2nd law","Conservation of momentum","Friction"],"a":2,"e":"Gun-bullet system: initial momentum=0. After firing: bullet forward, gun backward. Momentum conserved.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Which has more inertia — 10kg stone or 1kg ball?","o":["Ball","Stone (more mass = more inertia)","Same","Depends on speed"],"a":1,"e":"Inertia ∝ mass. 10kg stone has 10× more inertia than 1kg ball.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"A 10kg block on surface, μ=0.4, g=10. Friction force =","o":["4 N","40 N","400 N","0.4 N"],"a":1,"e":"f = μN = μmg = 0.4 × 10 × 10 = 40 N.","ch":"Laws of Motion","tag":"Must Do"},
+        {"q":"Work = Force × displacement × cosθ. Work done when force ⊥ displacement:","o":["Maximum","Minimum","Zero","Negative"],"a":2,"e":"W = Fscosθ. When θ=90°, cos90°=0, W=0. e.g. gravity does no work on horizontal motion.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Kinetic energy formula:","o":["mv","mv²","½mv²","2mv²"],"a":2,"e":"KE = ½mv². Depends on mass and velocity squared.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Potential energy formula (gravitational):","o":["mgh","½mgh","mg/h","m²gh"],"a":0,"e":"PE = mgh. Gravitational potential energy at height h above reference.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Power = Work/time. A motor does 1000J work in 5s. Power =","o":["5000 W","200 W","100 W","5 W"],"a":1,"e":"P = W/t = 1000/5 = 200 W.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"1 horsepower =","o":["746 W","1000 W","500 W","1500 W"],"a":0,"e":"1 HP = 746 W ≈ 0.746 kW. Used to rate engine power.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Work-energy theorem states:","o":["F=ma","Net work done = change in KE","W=Fs","P=W/t"],"a":1,"e":"Work-energy theorem: Net work = ΔKE = ½mv² - ½mu².","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"A 2kg mass moving at 4m/s. Its KE =","o":["4 J","8 J","16 J","32 J"],"a":2,"e":"KE = ½mv² = ½ × 2 × 4² = ½ × 2 × 16 = 16 J.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Conservative force is one where work done:","o":["Depends on path","Is path independent","Is always zero","Is always positive"],"a":1,"e":"Conservative force (gravity, spring) — work is path independent. Only depends on initial and final positions.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Elastic collision conserves:","o":["Momentum only","KE only","Both KE and momentum","Neither"],"a":2,"e":"Elastic collision: both KE and momentum conserved. Inelastic: only momentum conserved.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"In inelastic collision:","o":["Both KE and momentum conserved","Only momentum conserved","Only KE conserved","Neither conserved"],"a":1,"e":"Inelastic collision: momentum conserved, KE not conserved (converted to heat, sound).","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Spring potential energy = ","o":["kx","½kx","½kx²","kx²"],"a":2,"e":"Spring PE = ½kx² where k=spring constant, x=extension/compression.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"A 5kg mass falls 10m (g=10). What is KE when it reaches ground?","o":["50 J","500 J","5000 J","5 J"],"a":1,"e":"PE = mgh = 5×10×10 = 500J. All PE converts to KE. KE = 500 J.","ch":"Work Energy Power","tag":"Must Do"},
+        {"q":"Newton's law of gravitation: F = ","o":["Gm₁m₂r","Gm₁m₂/r²","Gm₁m₂/r","m₁m₂/Gr²"],"a":1,"e":"F = Gm₁m₂/r². Gravitational force ∝ product of masses, inversely ∝ square of distance.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Value of G (gravitational constant):","o":["6.67×10⁻¹¹ N·m²/kg²","9.8 N/kg","6.67×10⁻⁸","6.02×10²³"],"a":0,"e":"G = 6.67×10⁻¹¹ N·m²/kg². Universal constant. Very small — gravity is the weakest force.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Escape velocity from Earth's surface:","o":["8 km/s","11.2 km/s","3 km/s","40 km/s"],"a":1,"e":"Escape velocity = √(2gR) = √(2×9.8×6.4×10⁶) ≈ 11.2 km/s.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Orbital velocity of satellite at radius r:","o":["√(GM/r)","√(2GM/r)","GM/r","√(gr)"],"a":0,"e":"Orbital velocity v₀ = √(GM/r) = √(gR²/r). For low orbit ≈ √(gR) ≈ 7.9 km/s.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Geostationary satellite time period:","o":["12 hours","24 hours (stays over same spot)","6 hours","48 hours"],"a":1,"e":"Geostationary satellite: T=24h, altitude ~36000 km, equatorial orbit. Appears stationary.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"At what height does g become g/4 (R=radius of Earth)?","o":["R","2R","R/2","4R"],"a":0,"e":"g' = g(R/(R+h))². For g'=g/4: R/(R+h)=½ → h=R.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Kepler's third law: T² ∝","o":["r","r²","r³","1/r"],"a":2,"e":"Kepler's 3rd law: T² ∝ r³ (T=orbital period, r=orbital radius). Also called harmonic law.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Weight of body at center of Earth:","o":["Maximum","Same as surface","Zero","Double"],"a":2,"e":"At center of Earth, g=0 (mass distributed equally all around). Weight = mg = 0.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"Gravitational potential energy is:","o":["Always positive","Always negative","Zero","Depends on height"],"a":1,"e":"Gravitational PE = -GMm/r. Negative because work must be done against gravity to separate masses.","ch":"Gravitation","tag":"Should Do"},
+        {"q":"Kepler's first law states orbit of planet is:","o":["Circle","Ellipse with sun at one focus","Parabola","Hyperbola"],"a":1,"e":"Kepler's 1st law: Planets orbit Sun in ellipses with Sun at one focus.","ch":"Gravitation","tag":"Must Do"},
+        {"q":"First law of thermodynamics:","o":["Energy cannot be created or destroyed","Heat flows from hot to cold","Entropy of universe increases","Absolute zero cannot be reached"],"a":0,"e":"First law = conservation of energy. ΔU = Q - W. Energy can be converted, not created or destroyed.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Second law of thermodynamics (Clausius statement):","o":["Energy conserved","Heat flows spontaneously from hot to cold body","Entropy constant","Absolute zero unreachable"],"a":1,"e":"Second law (Clausius): Heat flows spontaneously from hot to cold body, never reverse on its own.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Zeroth law of thermodynamics defines:","o":["Energy","Entropy","Temperature (thermal equilibrium)","Pressure"],"a":2,"e":"Zeroth law: If A in equilibrium with C, and B in equilibrium with C, then A in equilibrium with B. Defines temperature.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"In isothermal process, _____ remains constant:","o":["Pressure","Volume","Temperature","Entropy"],"a":2,"e":"Isothermal (iso=same, thermal=heat) = constant temperature. For ideal gas: PV = constant.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"In adiabatic process, _____ remains constant:","o":["Temperature","Pressure","Heat (Q=0, no heat exchange)","Entropy"],"a":2,"e":"Adiabatic = no heat exchange (Q=0). ΔU = -W. e.g. quick compression of gas.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"In isobaric process, _____ remains constant:","o":["Temperature","Pressure","Volume","Heat"],"a":1,"e":"Isobaric (iso=same, baric=pressure) = constant pressure. e.g. boiling at atmospheric pressure.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Efficiency of Carnot engine:","o":["T₁/T₂","1-T₂/T₁","T₂/T₁","1-T₁/T₂"],"a":1,"e":"Carnot efficiency η = 1 - T₂/T₁ (T₂=cold, T₁=hot in Kelvin). Maximum possible efficiency.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Specific heat of water is:","o":["1 cal/g°C (4.18 J/g°C)","2 cal/g°C","0.5 cal/g°C","4 cal/g°C"],"a":0,"e":"Specific heat of water = 1 cal/g°C = 4.18 J/g°C. Highest of common substances.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Heat transfer by radiation does NOT require:","o":["Temperature difference","Medium (can travel through vacuum)","Energy","Wavelength"],"a":1,"e":"Radiation can travel through vacuum (e.g. sun's heat reaches Earth). No medium needed.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Newton's law of cooling states rate of cooling ∝:","o":["Temperature of body","Square of temperature","Difference from surrounding temperature","Cube of temperature"],"a":2,"e":"Newton's law: dT/dt ∝ (T - T₀). Rate of cooling proportional to temperature excess over surroundings.","ch":"Thermodynamics","tag":"Should Do"},
+        {"q":"Stefan's law: Power emitted ∝","o":["T","T²","T³","T⁴"],"a":3,"e":"Stefan's law: P = σAT⁴. Power radiated ∝ fourth power of absolute temperature.","ch":"Thermodynamics","tag":"Should Do"},
+        {"q":"Triple point of water is:","o":["0°C, 1 atm","273.16 K, 611.2 Pa","100°C","0 K"],"a":1,"e":"Triple point of water = 273.16 K (0.01°C) at 611.2 Pa. All three phases coexist.","ch":"Thermodynamics","tag":"Should Do"},
+        {"q":"Coulomb's law: F = ","o":["kq₁q₂r","kq₁q₂/r","kq₁q₂/r²","kq₁q₂r²"],"a":2,"e":"Coulomb's law: F = kq₁q₂/r² = q₁q₂/4πε₀r². k = 9×10⁹ N·m²/C².","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Electric field E at distance r from charge Q:","o":["kQ/r","kQ/r²","kQr","kQ²/r²"],"a":1,"e":"E = kQ/r² = F/q₀. Direction: away from +ve charge, toward -ve charge.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Electric potential V at distance r from charge Q:","o":["kQ/r","kQ/r²","kQr","kQ²/r"],"a":0,"e":"V = kQ/r. Potential is scalar. Work done = qV. V due to +ve charge is positive.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Electric flux through closed surface = charge enclosed / ε₀. This is:","o":["Coulomb's law","Gauss's law","Ampere's law","Faraday's law"],"a":1,"e":"Gauss's law: φ = Q_enc/ε₀. Total electric flux through closed surface = charge enclosed / permittivity.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Capacitance of parallel plate capacitor C = ","o":["ε₀A/d","ε₀d/A","ε₀A×d","A/ε₀d"],"a":0,"e":"C = ε₀A/d (or Kε₀A/d with dielectric). Increases with area A, decreases with separation d.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Energy stored in capacitor:","o":["CV","½CV²","C²V","CV²"],"a":1,"e":"Energy stored U = ½CV² = Q²/2C = QV/2.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"When capacitors connected in series, equivalent capacitance:","o":["Increases","Decreases","Stays same","Doubles"],"a":1,"e":"In series: 1/C = 1/C₁ + 1/C₂ + ... Equivalent C is smaller than smallest capacitor.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"When capacitors connected in parallel:","o":["C decreases","C = C₁ + C₂ + ...","C = C₁C₂/(C₁+C₂)","C = C₁/C₂"],"a":1,"e":"In parallel: C = C₁ + C₂ + ... Equivalent C is sum of all. Voltage same across all.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Value of ε₀ (permittivity of free space):","o":["8.85×10⁻¹² C²/N·m²","9×10⁹ N·m²/C²","6.67×10⁻¹¹","1.6×10⁻¹⁹ C"],"a":0,"e":"ε₀ = 8.85×10⁻¹² C²/N·m² (F/m). k = 1/4πε₀ = 9×10⁹ N·m²/C².","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Electric field inside a conductor is:","o":["Maximum","Minimum","Zero","Equal to surface field"],"a":2,"e":"Electric field inside conductor is zero. Free charges redistribute to cancel internal field.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Dielectric constant K is always:","o":["Less than 1","Greater than or equal to 1","Negative","Zero"],"a":1,"e":"Dielectric constant K ≥ 1. K=1 for vacuum. K=80 for water. Increases capacitance by factor K.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Charge on electron =","o":["1.6×10⁻¹⁹ C","9.1×10⁻³¹ C","1.6×10⁻¹⁸ C","6.02×10²³ C"],"a":0,"e":"Charge of electron = -1.6×10⁻¹⁹ C. Mass of electron = 9.1×10⁻³¹ kg.","ch":"Electrostatics","tag":"Must Do"},
+        {"q":"Ohm's law: V = ","o":["IR","I/R","R/I","I²R"],"a":0,"e":"Ohm's law: V = IR. Current I = V/R. Resistance R = V/I.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Resistors in series: equivalent resistance:","o":["R = R₁R₂/(R₁+R₂)","R = R₁+R₂+R₃","R = 1/R₁+1/R₂","Same as smallest"],"a":1,"e":"Series: R = R₁+R₂+R₃. Same current through all, voltage divides.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Resistors in parallel: equivalent resistance formula:","o":["R = R₁+R₂","1/R = 1/R₁+1/R₂","R = R₁R₂","R = R₁/R₂"],"a":1,"e":"Parallel: 1/R = 1/R₁+1/R₂+... For two: R = R₁R₂/(R₁+R₂). Smaller than smallest.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Electric power P = ","o":["V/I","VI = I²R = V²/R","IR","V²R"],"a":1,"e":"P = VI = I²R = V²/R. Unit = Watt. Energy = P×t.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Resistivity (ρ) of material: R = ","o":["ρL/A","ρA/L","ρ/LA","LA/ρ"],"a":0,"e":"R = ρL/A. ρ depends on material. R ∝ length L, inversely ∝ cross-section area A.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Kirchhoff's current law (KCL) states:","o":["Sum of voltages = 0","Sum of currents at junction = 0","V = IR","P = VI"],"a":1,"e":"KCL: ΣI = 0 at junction. Currents entering = currents leaving. Based on charge conservation.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Kirchhoff's voltage law (KVL) states:","o":["ΣI = 0","ΣV = 0 around closed loop","R = V/I","P = I²R"],"a":1,"e":"KVL: Sum of voltages around any closed loop = 0. Based on energy conservation.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Wheatstone bridge is balanced when:","o":["P/Q = R/S","P+Q = R+S","P×Q = R×S","P-Q = R-S"],"a":0,"e":"Balanced Wheatstone bridge: P/Q = R/S. No current through galvanometer. Used to find unknown resistance.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"A 100W bulb and 60W bulb connected in series. Which is brighter?","o":["100W","60W","Both same","Neither"],"a":1,"e":"In series, same current flows. P=I²R. Higher resistance dissipates more power. 60W bulb has higher resistance (V²/P).","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"EMF of cell vs terminal voltage:","o":["EMF = terminal voltage always","Terminal voltage = EMF - Ir (during current flow)","Terminal voltage > EMF","EMF = 0 when current flows"],"a":1,"e":"V_terminal = EMF - Ir. During discharge: terminal V < EMF due to internal resistance r.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Superconductivity occurs at:","o":["Very high temperature","Room temperature","Very low temperature (near 0 K)","High pressure"],"a":2,"e":"Superconductors have zero resistance below critical temperature (near absolute zero).","ch":"Current Electricity","tag":"Should Do"},
+        {"q":"If R₁ and R₂ in parallel give R_eq, then:","o":["R_eq > max(R₁,R₂)","R_eq < min(R₁,R₂)","R_eq = R₁+R₂","R_eq = R₁×R₂"],"a":1,"e":"Parallel resistance is always less than the smallest individual resistance.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"A 60W bulb runs at 220V. Current = ","o":["0.27 A","3.67 A","13200 A","0.03 A"],"a":0,"e":"I = P/V = 60/220 = 0.273 A.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Unit of resistivity:","o":["Ohm","Ohm·meter","Ohm/meter","Meter/Ohm"],"a":1,"e":"Resistivity ρ unit = Ω·m. From R = ρL/A → ρ = RA/L = Ω·m²/m = Ω·m.","ch":"Current Electricity","tag":"Must Do"},
+        {"q":"Magnetic force on moving charge: F = ","o":["qvB","qvBsinθ","qvBcosθ","qvB²"],"a":1,"e":"F = qvBsinθ. Maximum when v⊥B (θ=90°). Zero when v parallel to B (θ=0°).","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Force on current-carrying conductor in magnetic field:","o":["F = qvB","F = BIL sinθ","F = BIL cosθ","F = IL/B"],"a":1,"e":"F = BILsinθ. Maximum when current ⊥ B. Used in electric motors.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Biot-Savart law gives magnetic field due to:","o":["Moving charge","Current element","Magnet","Capacitor"],"a":1,"e":"Biot-Savart law: dB = μ₀Idl sinθ/4πr². Gives B due to small current element.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Ampere's law: ∮B·dl = ","o":["μ₀I_enc","μ₀I/r","B×length","μ₀I²"],"a":0,"e":"Ampere's circuital law: ∮B·dl = μ₀I_enclosed. Used to find B for symmetric current distributions.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Magnetic field at center of circular coil of radius R carrying current I:","o":["μ₀I/2R","μ₀I/4R","μ₀I/R","μ₀IR/2"],"a":0,"e":"B = μ₀I/2R. For N turns: B = μ₀NI/2R.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Moving coil galvanometer works on principle of:","o":["Heating effect","Magnetic effect of current","Electromagnetic induction","Photoelectric effect"],"a":1,"e":"Galvanometer: current-carrying coil in magnetic field experiences torque → deflection.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Diamagnetic materials are:","o":["Strongly attracted by magnets","Weakly repelled by magnets","Not affected by magnets","Permanently magnetized"],"a":1,"e":"Diamagnetic (e.g. Bi, Cu, water): weakly repelled by magnets. χ is small negative.","ch":"Magnetism","tag":"Should Do"},
+        {"q":"Ferromagnetic materials (iron, nickel) have:","o":["Small negative susceptibility","Small positive susceptibility","Very large positive susceptibility","Zero susceptibility"],"a":2,"e":"Ferromagnetic: very large positive χ. Strongly attracted by magnets. Have domains.","ch":"Magnetism","tag":"Must Do"},
+        {"q":"Curie point is:","o":["Temperature at which superconductivity occurs","Temperature above which ferromagnetism is lost","Melting point of magnets","Absolute zero"],"a":1,"e":"Curie temperature: above this, ferromagnetic → paramagnetic. Iron's Curie temp = 770°C.","ch":"Magnetism","tag":"Should Do"},
+        {"q":"Earth's magnetic field at poles is directed:","o":["Horizontal","Vertical (downward at N pole)","At 45°","Zero"],"a":1,"e":"At magnetic poles, field is vertical. At equator, field is horizontal. Dip = 90° at poles.","ch":"Magnetism","tag":"Should Do"},
+        {"q":"Faraday's law of EMI states induced EMF =","o":["BIL","−dΦ/dt (rate of change of flux)","qvB","V = IR"],"a":1,"e":"Faraday's law: ε = -dΦ/dt = -N×dΦ/dt for N turns. Magnitude = rate of flux change.","ch":"EMI","tag":"Must Do"},
+        {"q":"Lenz's law states induced current opposes:","o":["Applied voltage","The change causing it (conservation of energy)","Ohm's law","Faraday's law"],"a":1,"e":"Lenz's law: Induced current direction opposes the change in flux causing it. Ensures energy conservation.","ch":"EMI","tag":"Must Do"},
+        {"q":"Self-inductance of coil is defined by:","o":["V = LdI/dt","V = IR","V = Q/C","V = BIL"],"a":0,"e":"Self-inductance L: V = -L(dI/dt). Unit = Henry (H). Opposes change in current.","ch":"EMI","tag":"Must Do"},
+        {"q":"Mutual inductance M: EMF in secondary = ","o":["MdI₁/dt","MI₁","M/I₁","I₁/M"],"a":0,"e":"Mutual inductance: ε₂ = -M(dI₁/dt). M depends on geometry and number of turns.","ch":"EMI","tag":"Must Do"},
+        {"q":"Energy stored in inductor:","o":["LI","½LI²","LI²","½LI"],"a":1,"e":"Energy stored in inductor U = ½LI². Analogous to ½mv² for kinetic energy.","ch":"EMI","tag":"Must Do"},
+        {"q":"A straight conductor moves with velocity v in B field (v⊥B, L=length). Motional EMF =","o":["BLv","BL/v","BL²v","B/Lv"],"a":0,"e":"Motional EMF = BLv (when v, L, B all mutually perpendicular).","ch":"EMI","tag":"Must Do"},
+        {"q":"Transformer works on principle of:","o":["Self-induction","Mutual induction","Electrostatics","Magnetism only"],"a":1,"e":"Transformer: uses mutual induction. Primary coil EMF induces EMF in secondary.","ch":"EMI","tag":"Must Do"},
+        {"q":"Step-up transformer: Ns/Np > 1, then Vs/Vp:","o":["Less than 1","Greater than 1","Equal to 1","Depends on current"],"a":1,"e":"Step-up: Vs/Vp = Ns/Np > 1. Voltage increases. Current decreases. Power same (ideally).","ch":"EMI","tag":"Must Do"},
+        {"q":"Eddy currents are used in:","o":["Transformers","Induction furnace / electromagnetic braking","Galvanometers","Capacitors"],"a":1,"e":"Eddy currents used in: induction furnace (heating), electromagnetic braking, speedometers.","ch":"EMI","tag":"Should Do"},
+        {"q":"RMS value of AC voltage = V₀/√2. For V₀=220√2 V, Vrms =","o":["220 V","311 V","440 V","155 V"],"a":0,"e":"Vrms = V₀/√2 = 220√2/√2 = 220 V. That's why household supply is '220V AC'.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"In pure inductor circuit, current lags voltage by:","o":["90°","45°","180°","0°"],"a":0,"e":"Pure inductor: current lags voltage by 90° (π/2). Inductive reactance XL = ωL.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"In pure capacitor circuit, current leads voltage by:","o":["90°","45°","180°","0°"],"a":0,"e":"Pure capacitor: current leads voltage by 90°. Capacitive reactance XC = 1/ωC.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Inductive reactance XL = ","o":["ωL","1/ωL","ωC","1/ωC"],"a":0,"e":"XL = ωL = 2πfL. Increases with frequency. Inductor blocks high frequency AC.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Capacitive reactance XC = ","o":["ωC","ωL","1/ωC","1/ωL"],"a":2,"e":"XC = 1/ωC = 1/2πfC. Decreases with frequency. Capacitor blocks DC (f=0).","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Resonance in LCR circuit occurs when:","o":["XL = XC (ω = 1/√LC)","XL > XC","R = XL","XC = R"],"a":0,"e":"Resonance: XL = XC → ω₀ = 1/√LC. Impedance Z = R (minimum). Current maximum.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Power factor in AC circuit = ","o":["Z/R","R/Z (cosφ)","XL/Z","XC/Z"],"a":1,"e":"Power factor = cosφ = R/Z. Max power when cosφ=1 (pure resistor). Zero in pure L or C.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Impedance Z of LCR circuit = ","o":["R+XL+XC","√(R²+(XL-XC)²)","XL-XC","R+XL-XC"],"a":1,"e":"Impedance Z = √(R²+(XL-XC)²). Phase angle φ = tan⁻¹((XL-XC)/R).","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Average power in AC circuit P = ","o":["VrmsIrms","VrmsIrmscosφ","V₀I₀","V₀I₀cosφ"],"a":1,"e":"P_avg = VrmsIrmscosφ = I²rms×R. Power factor cosφ determines actual power.","ch":"AC Circuits","tag":"Must Do"},
+        {"q":"Speed of light in vacuum:","o":["3×10⁸ m/s","3×10⁶ m/s","3×10¹⁰ m/s","3×10⁵ km/s"],"a":0,"e":"c = 3×10⁸ m/s = 3×10⁵ km/s. Same in all reference frames (Einstein).","ch":"Optics","tag":"Must Do"},
+        {"q":"Refractive index n = c/v. For glass n=1.5, speed of light in glass =","o":["4.5×10⁸","2×10⁸","1.5×10⁸","3×10⁸"],"a":1,"e":"v = c/n = 3×10⁸/1.5 = 2×10⁸ m/s.","ch":"Optics","tag":"Must Do"},
+        {"q":"Snell's law of refraction:","o":["n₁sinθ₁ = n₂sinθ₂","n₁cosθ₁ = n₂cosθ₂","n₁θ₁ = n₂θ₂","sinθ₁/sinθ₂ = n₂-n₁"],"a":0,"e":"Snell's law: n₁sinθ₁ = n₂sinθ₂. When going denser medium, ray bends toward normal.","ch":"Optics","tag":"Must Do"},
+        {"q":"Lens formula: 1/f = ","o":["1/v - 1/u","1/v + 1/u","1/u - 1/v","v - u"],"a":0,"e":"Lens formula: 1/f = 1/v - 1/u. Mirror formula: 1/f = 1/v + 1/u.","ch":"Optics","tag":"Must Do"},
+        {"q":"Power of lens P = ","o":["f","1/f (in meters)","f²","1/f²"],"a":1,"e":"P = 1/f (in meters). Unit = Dioptre (D). Convex lens: +ve P. Concave: -ve P.","ch":"Optics","tag":"Must Do"},
+        {"q":"A convex lens of focal length 20cm. Power =","o":["0.2 D","5 D","20 D","0.05 D"],"a":1,"e":"P = 1/f = 1/0.2m = 5 Dioptre.","ch":"Optics","tag":"Must Do"},
+        {"q":"Total internal reflection (TIR) occurs when:","o":["Light goes from rare to dense medium","Light goes from dense to rare and angle > critical angle","Angle of incidence = 0","Refractive index = 1"],"a":1,"e":"TIR: light in denser medium hits interface at angle > critical angle → no refraction, full reflection.","ch":"Optics","tag":"Must Do"},
+        {"q":"Critical angle C is related to refractive index n by:","o":["sinC = n","sinC = 1/n","sinC = n²","cosC = 1/n"],"a":1,"e":"sinC = 1/n (for medium with respect to air). C = sin⁻¹(1/n).","ch":"Optics","tag":"Must Do"},
+        {"q":"Optical fibre works on principle of:","o":["Reflection","Refraction","Total internal reflection","Diffraction"],"a":2,"e":"Optical fibres use TIR to transmit light with minimal loss over long distances.","ch":"Optics","tag":"Must Do"},
+        {"q":"Mirror formula: 1/f = 1/v + 1/u. For concave mirror f =","o":["Positive","Negative (convention)","Zero","Infinity"],"a":1,"e":"Concave mirror: f is negative (using sign convention where distances measured from pole).","ch":"Optics","tag":"Must Do"},
+        {"q":"Magnification m = v/u. For real, inverted image, m is:","o":["Positive","Negative","Zero","Infinity"],"a":1,"e":"m = -v/u. Negative m → real and inverted image. Positive m → virtual and erect.","ch":"Optics","tag":"Must Do"},
+        {"q":"Rainbow is formed by:","o":["Reflection","Refraction only","Dispersion + TIR + refraction in water droplets","Diffraction"],"a":2,"e":"Rainbow: sunlight enters water droplets, disperses (different wavelengths refract differently), TIR inside, exits.","ch":"Optics","tag":"Must Do"},
+        {"q":"Blue light scatters more than red light because scattering ∝","o":["λ","λ²","1/λ⁴ (Rayleigh)","λ⁴"],"a":2,"e":"Rayleigh scattering ∝ 1/λ⁴. Short wavelength (blue) scatters much more → sky appears blue.","ch":"Optics","tag":"Must Do"},
+        {"q":"Huygen's principle states each point on wavefront is:","o":["A source of light","A new secondary source of wavelets","A receiver","A mirror"],"a":1,"e":"Huygen's principle: every point on wavefront acts as new secondary source emitting spherical wavelets.","ch":"Optics","tag":"Must Do"},
+        {"q":"Young's double slit experiment fringe width β = ","o":["λd/D","λD/d","dD/λ","λ/dD"],"a":1,"e":"Fringe width β = λD/d (D=screen distance, d=slit separation, λ=wavelength).","ch":"Optics","tag":"Must Do"},
+        {"q":"In YDSE, fringe width increases if:","o":["λ decreases","D decreases","d decreases","All decrease"],"a":2,"e":"β = λD/d. Fringe width increases when slit separation d decreases.","ch":"Optics","tag":"Must Do"},
+        {"q":"Condition for constructive interference (bright fringes):","o":["Path difference = (2n+1)λ/2","Path difference = nλ","Path difference = λ/4","Path difference = λ/2"],"a":1,"e":"Constructive: path diff = nλ (n=0,±1,±2...). Destructive: path diff = (2n+1)λ/2.","ch":"Optics","tag":"Must Do"},
+        {"q":"Diffraction is bending of light around:","o":["Mirrors","Edges of obstacles","Lenses","Flat surfaces"],"a":1,"e":"Diffraction = bending of waves around edges/corners of obstacles. Occurs with all waves.","ch":"Optics","tag":"Must Do"},
+        {"q":"Photoelectric effect is explained by:","o":["Wave theory of light","Quantum (photon) theory by Einstein","Classical mechanics","Maxwell's equations"],"a":1,"e":"Einstein (1905, Nobel 1921) explained photoelectric effect using photons. KE_max = hf - φ.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Energy of photon E = ","o":["hf","hf²","h/f","f/h"],"a":0,"e":"E = hf = hc/λ. h = Planck's constant = 6.63×10⁻³⁴ J·s.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"de Broglie wavelength λ = ","o":["h/p","hp","h/mv","h×mv"],"a":0,"e":"de Broglie: λ = h/p = h/mv. All matter has wave character. Larger mass → smaller wavelength.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Photoelectric threshold frequency condition:","o":["hf > φ (work function)","hf < φ","hf = 0","No condition"],"a":0,"e":"For emission: hf ≥ φ (work function). KE_max = hf - φ. Threshold: hf₀ = φ.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Bohr's model: angular momentum of electron = ","o":["nh/2π","nh","n²h","h/n"],"a":0,"e":"Bohr's quantization: L = nh/2π = nℏ (n = principal quantum number = 1,2,3...).","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Energy of electron in nth Bohr orbit of hydrogen:","o":["En = 13.6/n eV","En = -13.6/n² eV","En = 13.6n eV","En = -13.6n² eV"],"a":1,"e":"En = -13.6/n² eV. Ground state (n=1): -13.6 eV. Negative = bound state.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Half-life of radioactive substance: after 2 half-lives, fraction remaining =","o":["1/2","1/4","1/8","1/3"],"a":1,"e":"After each half-life, half remains. After 2: (1/2)² = 1/4 remains.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Alpha particle is:","o":["Electron","Helium nucleus (2p+2n)","Photon","Neutron"],"a":1,"e":"Alpha (α) particle = helium-4 nucleus (2 protons + 2 neutrons). Charge = +2e.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Beta particle is:","o":["Helium nucleus","Fast electron from nucleus","Photon","Proton"],"a":1,"e":"Beta (β) particle = electron (β⁻) or positron (β⁺) emitted from nucleus.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Gamma rays are:","o":["Alpha particles","Beta particles","High-energy electromagnetic radiation","Neutrons"],"a":2,"e":"Gamma (γ) rays = high-energy electromagnetic radiation (photons). No mass, no charge.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Mass defect and nuclear binding energy are related by:","o":["E = mc²","E = mc","E = m/c²","E = mc³"],"a":0,"e":"E = mc² (Einstein's mass-energy equivalence). Binding energy = mass defect × c².","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Nuclear fission involves:","o":["Combining small nuclei","Splitting heavy nucleus into smaller fragments + energy","Beta decay","Gamma emission"],"a":1,"e":"Fission = heavy nucleus (U-235) splits into smaller nuclei + neutrons + huge energy. Basis of nuclear reactor.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Nuclear fusion involves:","o":["Splitting heavy nucleus","Combining light nuclei (H→He) + huge energy","Alpha decay","Beta decay"],"a":1,"e":"Fusion = combining light nuclei (H + H → He). Powers the Sun. Requires very high temperature.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Activity of radioactive sample A = λN. Unit of activity:","o":["Hertz","Becquerel (Bq) or Curie (Ci)","Joule","Second"],"a":1,"e":"Activity = number of decays per second. Unit = Becquerel (1 Bq = 1 decay/s). 1 Curie = 3.7×10¹⁰ Bq.","ch":"Modern Physics","tag":"Must Do"},
+        {"q":"Intrinsic semiconductor at 0K behaves like:","o":["Conductor","Insulator","Semiconductor","Superconductor"],"a":1,"e":"At 0K, all electrons in valence band, no free electrons → behaves like insulator.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"n-type semiconductor is formed by doping with:","o":["Trivalent impurity","Pentavalent impurity (P, As, Sb)","Bivalent","No doping"],"a":1,"e":"n-type: pentavalent dopant (5 valence electrons, one extra) → extra electrons as charge carriers.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"p-type semiconductor is formed by doping with:","o":["Pentavalent impurity","Trivalent impurity (B, Al, In)","Bivalent","Monovalent"],"a":1,"e":"p-type: trivalent dopant (3 valence electrons, one short) → holes as charge carriers.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"In p-n junction diode, forward bias means:","o":["p connected to negative","p connected to positive terminal of battery","No connection","Reverse connection"],"a":1,"e":"Forward bias: p-side to +ve, n-side to -ve of battery. Allows current (low resistance).","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"p-n junction in reverse bias:","o":["Allows current","Blocks current (high resistance)","Breaks down","No effect"],"a":1,"e":"Reverse bias: p to negative, n to positive. Blocks current (except tiny reverse saturation current).","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"Zener diode is used for:","o":["Amplification","Voltage regulation (stabilization)","Oscillation","Rectification"],"a":1,"e":"Zener diode works in reverse breakdown. Used for voltage regulation/stabilization.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"LED emits light when:","o":["Reverse biased","Forward biased","In breakdown","Unbiased"],"a":1,"e":"LED (Light Emitting Diode) emits photons when forward biased — electrons recombine with holes.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"Transistor can act as:","o":["Rectifier only","Amplifier and switch","Voltage regulator only","Oscillator only"],"a":1,"e":"Transistor: used as amplifier (small input → large output) and as switch (on/off).","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"Full wave rectifier output frequency for 50Hz AC input:","o":["25 Hz","50 Hz","100 Hz","200 Hz"],"a":2,"e":"Full wave rectifier: both halves of AC cycle converted. Output frequency = 2 × input = 100 Hz.","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"Band gap of silicon is approximately:","o":["0 eV","1.1 eV","3.5 eV","10 eV"],"a":1,"e":"Si band gap ≈ 1.1 eV. Ge ≈ 0.7 eV. Insulators have large band gap (>5 eV). Conductors have 0.","ch":"Semiconductors","tag":"Should Do"},
+        {"q":"In common emitter (CE) transistor configuration, current gain β =","o":["IC/IB","IB/IC","IC/IE","IE/IC"],"a":0,"e":"Current gain β = IC/IB (common emitter). Typically β = 20-200. α = IC/IE (common base).","ch":"Semiconductors","tag":"Must Do"},
+        {"q":"Time period of simple pendulum T = ","o":["2π√(l/g)","2π√(g/l)","2π√l","√(l/g)"],"a":0,"e":"T = 2π√(l/g). Depends on length l and g. Independent of mass and amplitude (small).","ch":"Waves","tag":"Must Do"},
+        {"q":"Speed of sound in air at 0°C ≈","o":["100 m/s","332 m/s","1500 m/s","3×10⁸ m/s"],"a":1,"e":"Speed of sound in air ≈ 332 m/s at 0°C, 343 m/s at 20°C. Much less than light.","ch":"Waves","tag":"Must Do"},
+        {"q":"Frequency = 1/T. If T = 0.02s, frequency =","o":["0.02 Hz","2 Hz","50 Hz","100 Hz"],"a":2,"e":"f = 1/T = 1/0.02 = 50 Hz. (Standard AC in India = 50 Hz).","ch":"Waves","tag":"Must Do"},
+        {"q":"Wave equation: v = fλ. If f=500Hz, λ=0.68m, v=?","o":["340 m/s","500 m/s","0.68 m/s","735 m/s"],"a":0,"e":"v = fλ = 500 × 0.68 = 340 m/s. (Speed of sound in air).","ch":"Waves","tag":"Must Do"},
+        {"q":"Doppler effect: when source approaches observer, frequency heard:","o":["Decreases","Increases","Stays same","Becomes zero"],"a":1,"e":"Doppler effect: source approaching → compressed waves → increased frequency (higher pitch).","ch":"Waves","tag":"Must Do"},
+        {"q":"Beats frequency = ","o":["f₁+f₂","f₁-f₂ (difference)","f₁×f₂","f₁/f₂"],"a":1,"e":"Beats = periodic variation in intensity. Beat frequency = |f₁-f₂|. Used in tuning instruments.","ch":"Waves","tag":"Must Do"},
+        {"q":"In resonance tube (fundamental), L = λ/4. If L=25cm, wavelength =","o":["25 cm","50 cm","100 cm","12.5 cm"],"a":2,"e":"Fundamental in closed pipe: L = λ/4 → λ = 4L = 4×25 = 100 cm.","ch":"Waves","tag":"Must Do"},
+        {"q":"Stationary (standing) waves are formed by:","o":["Single progressive wave","Two identical waves traveling in opposite directions","Reflection only","Diffraction"],"a":1,"e":"Standing waves = superposition of two identical waves traveling in opposite directions.","ch":"Waves","tag":"Must Do"},
+        {"q":"Nodes in standing wave are points of:","o":["Maximum vibration","Zero vibration","Half amplitude","Variable amplitude"],"a":1,"e":"Nodes = points of zero displacement. Antinodes = points of maximum amplitude.","ch":"Waves","tag":"Must Do"},
+        {"q":"Longitudinal waves require:","o":["Transverse vibration","Medium with elasticity (can't travel in vacuum)","Electric field","Magnetic field"],"a":1,"e":"Longitudinal waves (sound) require material medium. Cannot travel in vacuum. Transverse waves can.","ch":"Waves","tag":"Must Do"},
+        {"q":"Which of these is a transverse wave?","o":["Sound","Light","Ultrasound","All of above"],"a":1,"e":"Light is transverse wave (electric and magnetic fields oscillate perpendicular to direction of propagation).","ch":"Waves","tag":"Must Do"},
+        {"q":"Ultrasound frequency is:","o":["Below 20 Hz","20-20000 Hz","Above 20000 Hz","Any frequency"],"a":2,"e":"Ultrasound > 20 kHz (above human hearing). Infrasound < 20 Hz. Audible: 20-20000 Hz.","ch":"Waves","tag":"Must Do"},
+        {"q":"Ideal gas equation: PV = ","o":["nRT","nR/T","RT/n","nT/R"],"a":0,"e":"Ideal gas: PV = nRT. n=moles, R=8.314 J/mol·K, T in Kelvin.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"Absolute zero temperature =","o":["0°C","−273°C (0 K)","−100°C","−373°C"],"a":1,"e":"Absolute zero = 0 K = -273.15°C. All molecular motion theoretically ceases.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"Average kinetic energy of gas molecule ∝","o":["P","V","T (absolute temperature)","1/T"],"a":2,"e":"KE_avg = (3/2)kT. KE directly proportional to absolute temperature T.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"Avogadro's number NA =","o":["6.02×10²³","6.02×10²²","6.02×10²⁴","3.01×10²³"],"a":0,"e":"NA = 6.022×10²³ /mol. Number of atoms/molecules in 1 mole of substance.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"RMS speed of gas molecules ∝","o":["√T","T","T²","1/√T"],"a":0,"e":"v_rms = √(3RT/M) ∝ √T. Molecules move faster at higher temperature.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"At constant temperature (Boyle's law): P ∝","o":["V","1/V","V²","√V"],"a":1,"e":"Boyle's law: PV = constant (at constant T). P ∝ 1/V. Double pressure = half volume.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"At constant pressure (Charles's law): V ∝","o":["1/T","T (absolute)","P","1/P"],"a":1,"e":"Charles's law: V/T = constant (at constant P). V directly ∝ absolute temperature.","ch":"Kinetic Theory","tag":"Must Do"},
+        {"q":"Degrees of freedom for diatomic gas at room temperature:","o":["3","5","6","7"],"a":1,"e":"Diatomic gas (O2, N2): 3 translational + 2 rotational = 5 degrees of freedom (at room T).","ch":"Kinetic Theory","tag":"Should Do"}
+        ];
+
+        const chem_questions = [
+        {"q":"Mole is defined as:","o":["6.02×10²³ particles","Amount of substance with 6.02×10²³ entities","1 gram of substance","Molecular weight in grams"],"a":1,"e":"1 mole = 6.022×10²³ entities (Avogadro's number). SI unit of amount of substance.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Molar mass of H₂O:","o":["16 g/mol","18 g/mol","20 g/mol","32 g/mol"],"a":1,"e":"H₂O: 2×1 (H) + 16 (O) = 18 g/mol.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Number of moles in 36g of H₂O:","o":["1 mol","2 mol","3 mol","18 mol"],"a":1,"e":"n = mass/molar mass = 36/18 = 2 mol.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Number of molecules in 2 mol of CO₂:","o":["6.02×10²³","1.204×10²⁴","3.01×10²³","2×10²³"],"a":1,"e":"N = n × NA = 2 × 6.02×10²³ = 1.204×10²⁴ molecules.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Empirical formula gives:","o":["Actual number of atoms","Simplest whole number ratio of atoms","Structural formula","3D structure"],"a":1,"e":"Empirical formula = simplest whole number ratio. Molecular formula = actual number of atoms.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Molarity M = ","o":["moles/volume(L)","mass/volume","moles×volume","moles/mass"],"a":0,"e":"Molarity = n/V (moles per liter). Unit = mol/L or M. Most common concentration unit.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Molality m = ","o":["moles/volume(L)","moles/kg of solvent","moles/kg of solution","mass/moles"],"a":1,"e":"Molality = moles of solute / kg of solvent. Temperature independent (unlike molarity).","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Limiting reagent is:","o":["Reagent in excess","Reagent completely consumed first (limits product)","Most expensive","Most abundant"],"a":1,"e":"Limiting reagent is completely consumed first, determines maximum product formed.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Percentage yield = ","o":["actual/theoretical × 100","theoretical/actual × 100","moles × 100","mass × 100"],"a":0,"e":"% yield = (actual yield/theoretical yield) × 100%. Rarely 100% due to side reactions.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Molar volume of ideal gas at STP:","o":["11.2 L","22.4 L","44.8 L","100 L"],"a":1,"e":"1 mole of any ideal gas at STP (0°C, 1 atm) = 22.4 L. At NTP (25°C): 24.5 L.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Number of atoms in 56 g of iron (at. mass 56):","o":["1 NA","2 NA","0.5 NA","56 NA"],"a":0,"e":"n = 56/56 = 1 mol. Number of atoms = 1 × NA = 6.02×10²³.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Equivalent weight of H₂SO₄ (molar mass 98, n-factor=2):","o":["49","98","196","32"],"a":0,"e":"Eq. wt = molar mass/n-factor = 98/2 = 49. n-factor for H₂SO₄ (diprotic acid) = 2.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Normality N = ","o":["n/V(L)","equivalents/V(L)","moles×n-factor","equivalents×V"],"a":1,"e":"Normality = number of equivalents per liter. N = Molarity × n-factor.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Mole fraction of A = ","o":["nA/(nA+nB)","nA×nB","nA-nB","nB/nA"],"a":0,"e":"Mole fraction XA = nA/(nA+nB). Sum of all mole fractions = 1. No units.","ch":"Mole Concept","tag":"Must Do"},
+        {"q":"Atomic number is number of:","o":["Neutrons","Protons","Electrons + neutrons","Nucleons"],"a":1,"e":"Atomic number Z = number of protons. Defines the element. Equal to electrons in neutral atom.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Mass number A = ","o":["Protons only","Protons + Neutrons","Electrons + protons","Neutrons only"],"a":1,"e":"Mass number A = Z (protons) + N (neutrons). Represents nucleon number.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Isotopes have same:","o":["Mass number","Atomic number (same Z, different A)","Number of neutrons","None"],"a":1,"e":"Isotopes: same atomic number (same element) but different mass numbers (different neutrons).","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Heisenberg uncertainty principle states:","o":["Electrons orbit fixed paths","Position and momentum cannot both be precisely known","Energy is quantized","Light is a particle"],"a":1,"e":"Δx × Δp ≥ h/4π. Cannot simultaneously know exact position and momentum.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Bohr model failed to explain:","o":["Hydrogen spectrum","Fine structure of spectral lines and spectra of multi-electron atoms","Atomic number","Mass number"],"a":1,"e":"Bohr model only works for hydrogen-like atoms. Failed for multi-electron atoms and fine structure.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Maximum electrons in n=3 shell:","o":["8","18","32","9"],"a":1,"e":"Max electrons in nth shell = 2n². For n=3: 2×9=18. n=1:2, n=2:8, n=3:18.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Aufbau principle states electrons fill:","o":["Highest energy first","Lowest energy orbitals first","All orbitals equally","Outer shells first"],"a":1,"e":"Aufbau (build-up): electrons fill lower energy orbitals before higher energy ones.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Pauli exclusion principle: An orbital can hold maximum:","o":["1 electron","2 electrons with opposite spins","3 electrons","4 electrons"],"a":1,"e":"Pauli: no two electrons can have same set of 4 quantum numbers. Max 2 electrons per orbital (opposite spin).","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Hund's rule states electrons in same subshell:","o":["Pair before occupying empty orbitals","Occupy empty orbitals singly first (parallel spin)","Fill lowest energy orbital","Pair in any order"],"a":1,"e":"Hund's rule: electrons occupy empty orbitals singly with parallel spin before pairing.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Electronic configuration of Na (Z=11):","o":["1s²2s²2p⁶3s¹","1s²2s²2p⁵3s²","1s²2s²2p⁶3p¹","2s²2p⁶3s¹"],"a":0,"e":"Na (11): 1s²2s²2p⁶3s¹. Outer electron 3s¹ makes it monovalent. Loses 1e → Na⁺.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Shape of s orbital:","o":["Dumbbell","Spherical","Clover-leaf","Ring"],"a":1,"e":"s orbital: spherical. p orbital: dumbbell. d orbital: clover-leaf (or dumbbell with ring).","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Quantum number 'l' represents:","o":["Energy level","Angular momentum (shape of orbital)","Magnetic orientation","Spin"],"a":1,"e":"Azimuthal quantum number l: shape of orbital. l=0(s), l=1(p), l=2(d), l=3(f).","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Hydrogen spectrum series in visible range:","o":["Lyman","Balmer","Paschen","Brackett"],"a":1,"e":"Balmer series (transitions to n=2) is in visible range. Lyman (→n=1) in UV.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Wavelength of H spectrum: 1/λ = RH(1/n₁² - 1/n₂²). R is:","o":["Gas constant","Rydberg constant (1.097×10⁷ m⁻¹)","Resistance","Radius"],"a":1,"e":"Rydberg constant RH = 1.097×10⁷ m⁻¹. Used in hydrogen spectrum formula.","ch":"Atomic Structure","tag":"Must Do"},
+        {"q":"Ionic bond forms by:","o":["Sharing electrons","Transfer of electrons (between metal and non-metal)","Metallic bonding","Van der Waals forces"],"a":1,"e":"Ionic bond: electron transfer from electropositive metal to electronegative non-metal. e.g. NaCl.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Covalent bond forms by:","o":["Electron transfer","Sharing of electrons","Metallic lattice","Electrostatic"],"a":1,"e":"Covalent bond: sharing electrons between atoms. e.g. H₂, Cl₂, H₂O, CH₄.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Electronegativity of fluorine is:","o":["Least","Highest of all elements (4.0 Pauling)","Medium","Same as oxygen"],"a":1,"e":"Fluorine has highest electronegativity = 4.0 (Pauling scale). F > O > N > Cl > Br.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Bond angle in water (H₂O):","o":["109.5°","120°","104.5°","180°"],"a":2,"e":"H₂O: sp³ hybridization with 2 lone pairs → bond angle compressed to 104.5°.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Hybridization of carbon in methane (CH₄):","o":["sp","sp²","sp³","sp³d"],"a":2,"e":"CH₄: sp³ hybridization. Tetrahedral geometry. Bond angle 109.5°.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"VSEPR theory predicts:","o":["Orbital shapes","Molecular geometry based on electron pair repulsion","Reaction rates","Bond energy"],"a":1,"e":"VSEPR: electron pairs repel each other → geometry minimizes repulsion → molecular shape.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Linear molecule has bond angle:","o":["90°","109.5°","120°","180°"],"a":3,"e":"Linear molecule: 180°. e.g. CO₂, BeCl₂, HCN. sp hybridization.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Hydrogen bonding is found in:","o":["HF, H₂O, NH₃ (F, O, N-H bonds)","CH₄","CCl₄","Noble gases"],"a":0,"e":"H-bonding: between H attached to electronegative atom (F, O, N) and lone pair of another such atom.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"CO₂ geometry:","o":["Bent","Linear","Trigonal planar","Tetrahedral"],"a":1,"e":"CO₂: sp hybridization, 2 double bonds, no lone pairs → linear (180°).","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Number of sigma bonds in ethylene (C₂H₄):","o":["2","4","5","6"],"a":2,"e":"C₂H₄: 1 C=C (1σ+1π) + 4 C-H σ bonds = 5 σ bonds total.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Bond order of O₂:","o":["1","2","3","0"],"a":1,"e":"O₂: double bond (O=O). Bond order = (bonding-antibonding)/2. O₂ is paramagnetic.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Hybridization of N in NH₃:","o":["sp","sp²","sp³","sp³d"],"a":2,"e":"NH₃: sp³ hybridized N, 3 bond pairs + 1 lone pair → pyramidal. Bond angle 107°.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Lattice energy is energy required to:","o":["Form ionic crystal","Separate ionic crystal into gaseous ions","Break covalent bond","Dissolve ionic compound"],"a":1,"e":"Lattice energy = energy to separate 1 mole of ionic crystal into gaseous ions. Higher lattice energy → more stable crystal.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Which has highest lattice energy?","o":["NaCl","MgO","CaCl₂","KCl"],"a":1,"e":"MgO: Mg²⁺ + O²⁻. Lattice energy ∝ charge/ionic radius. Higher charge → higher lattice energy.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"London dispersion forces are due to:","o":["Permanent dipoles","Temporary (instantaneous) dipoles","Ionic charges","H-bonding"],"a":1,"e":"London forces (van der Waals) = temporary dipoles from electron fluctuations. Weaker than H-bonds.","ch":"Chemical Bonding","tag":"Must Do"},
+        {"q":"Law of mass action: for A + B ⇌ C + D, Kc = ","o":["[A][B]/[C][D]","[C][D]/[A][B]","[A][B]×[C][D]","[A+B]/[C+D]"],"a":1,"e":"Kc = [products]/[reactants] = [C][D]/[A][B] at equilibrium.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Le Chatelier's principle states:","o":["Equilibrium is always on right","If disturbed, system shifts to oppose the change","Kc is always 1","Pressure has no effect"],"a":1,"e":"Le Chatelier: when equilibrium disturbed, system shifts to counteract the change.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"For exothermic reaction at equilibrium, increasing temperature:","o":["Shifts equilibrium right","Shifts equilibrium left (reduces yield of products)","No effect","Increases Kc"],"a":1,"e":"Exothermic: increasing T shifts equilibrium left (favors endothermic reverse reaction). Kc decreases.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Increasing pressure on gas equilibrium N₂+3H₂⇌2NH₃ shifts it:","o":["Left","Right (toward fewer moles of gas)","No effect","Depends on temperature"],"a":1,"e":"Increasing P favors side with fewer moles of gas. Left: 1+3=4 mol. Right: 2 mol. Shifts right.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"pH of neutral solution at 25°C:","o":["0","7","14","1"],"a":1,"e":"pH = 7 at 25°C for neutral solution (pure water). pH < 7 = acidic, pH > 7 = basic.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"pH = −log[H⁺]. If [H⁺] = 10⁻³ M, pH = ","o":["3","−3","10","0.001"],"a":0,"e":"pH = -log[H⁺] = -log(10⁻³) = 3.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Ka is:","o":["Equilibrium constant for base","Acid dissociation constant","Kw/Kb","Rate constant"],"a":1,"e":"Ka = acid dissociation constant. Higher Ka → stronger acid. pKa = -log Ka.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Buffer solution resists change in:","o":["Temperature","pH","Concentration","Pressure"],"a":1,"e":"Buffer = solution that resists pH change upon addition of acid or base. e.g. CH₃COOH/CH₃COONa.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Henderson-Hasselbalch equation: pH = ","o":["pKa + log[acid]/[salt]","pKa + log[salt]/[acid]","pKa - log[acid]","log[acid]"],"a":1,"e":"pH = pKa + log([A⁻]/[HA]) = pKa + log([salt]/[acid]).","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Solubility product Ksp of AgCl:","o":["[AgCl]","[Ag⁺][Cl⁻]","[Ag⁺]+[Cl⁻]","[Ag⁺]²[Cl⁻]"],"a":1,"e":"AgCl ⇌ Ag⁺ + Cl⁻. Ksp = [Ag⁺][Cl⁻]. Precipitation if ionic product > Ksp.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Common ion effect suppresses:","o":["Equilibrium","Ionization/solubility of weak electrolyte","Ksp","pH"],"a":1,"e":"Common ion effect: adding common ion suppresses ionization of weak electrolyte. Used in buffer.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Kw (water) = [H⁺][OH⁻] at 25°C = ","o":["10⁻⁷","10⁻¹⁴","10⁻⁷/10⁻⁷","1"],"a":1,"e":"Kw = 10⁻¹⁴ at 25°C. At neutral: [H⁺] = [OH⁻] = 10⁻⁷ M. pH + pOH = 14.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Strong acids are:","o":["HCN, CH₃COOH","HCl, H₂SO₄, HNO₃, HBr, HI, HClO₄","H₂CO₃, H₂SO₃","H₃PO₄"],"a":1,"e":"Strong acids: HCl, HBr, HI, H₂SO₄, HNO₃, HClO₄ — fully dissociate in water.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Bronsted-Lowry acid is a:","o":["Proton acceptor","Proton donor (H⁺ donor)","Electron pair donor","Electron pair acceptor"],"a":1,"e":"Bronsted-Lowry: acid = proton (H⁺) donor. Base = proton acceptor.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Lewis acid is:","o":["Proton donor","Proton acceptor","Electron pair acceptor","Electron pair donor"],"a":2,"e":"Lewis acid = electron pair acceptor. Lewis base = electron pair donor. Broader definition.","ch":"Equilibrium","tag":"Must Do"},
+        {"q":"Enthalpy change ΔH for exothermic reaction is:","o":["Positive","Negative (energy released)","Zero","Undefined"],"a":1,"e":"Exothermic: ΔH < 0 (negative). Heat released to surroundings. Combustion, neutralization.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Hess's law states:","o":["Reaction enthalpy depends on path","ΔH is independent of path (state function)","ΔH = 0 always","ΔS = 0"],"a":1,"e":"Hess's law: ΔH is path independent — depends only on initial and final states.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Standard enthalpy of formation (ΔHf°) of element in standard state is:","o":["Positive","Negative","Zero","Variable"],"a":2,"e":"ΔHf° of element in its standard state = 0. e.g. ΔHf°(O₂) = 0, ΔHf°(C graphite) = 0.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Gibbs free energy ΔG = ","o":["ΔH + TΔS","ΔH - TΔS","ΔH × ΔS","ΔH/ΔS"],"a":1,"e":"ΔG = ΔH - TΔS. ΔG < 0 → spontaneous. ΔG > 0 → non-spontaneous. ΔG = 0 → equilibrium.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Entropy (S) increases in:","o":["Freezing","Dissolving salt (solid→ions in solution)","Condensation","Deposition"],"a":1,"e":"Entropy increases: solid→liquid→gas, dissolving, mixing, higher T. Disorder increases.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"First law of thermodynamics: ΔU = ","o":["q + w","q - w","q × w","q/w"],"a":0,"e":"ΔU = q + w. (q = heat absorbed, w = work done ON system). Energy conservation.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Enthalpy H = U + PV. At constant pressure, ΔH = ","o":["ΔU","ΔU + PΔV","ΔU - PΔV","PΔV"],"a":1,"e":"At constant P: ΔH = ΔU + PΔV = q_p (heat at constant pressure).","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Spontaneous process always has:","o":["ΔG > 0","ΔG < 0","ΔG = 0","ΔH < 0"],"a":1,"e":"Spontaneous process: ΔG < 0 at constant T and P. Non-spontaneous: ΔG > 0. Equilibrium: ΔG = 0.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Which process is always spontaneous?","o":["ΔH+, ΔS-","ΔH-, ΔS+ (always)","ΔH+, ΔS+","ΔH-, ΔS-"],"a":1,"e":"ΔG = ΔH - TΔS. When ΔH<0 and ΔS>0: ΔG always negative → always spontaneous.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Bond dissociation energy is energy required to:","o":["Form a bond","Break one mole of bonds in gas phase","Ionize atom","Dissolve compound"],"a":1,"e":"Bond energy = energy to break 1 mole of bonds (gas phase). Stronger bond → higher bond energy.","ch":"Thermodynamics","tag":"Must Do"},
+        {"q":"Oxidation is:","o":["Gain of electrons","Loss of electrons (or increase in oxidation state)","Gain of proton","Loss of oxygen"],"a":1,"e":"Oxidation = loss of electrons = increase in oxidation state. Reduction = gain of electrons.","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidation state of O in H₂O:","o":["0","-1","-2","+2"],"a":2,"e":"O in most compounds = -2. Exceptions: O₂(0), H₂O₂(-1), OF₂(+2).","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidation state of Cr in K₂Cr₂O₇:","o":["0","+3","+6","+7"],"a":2,"e":"K₂Cr₂O₇: 2(+1) + 2(Cr) + 7(-2) = 0 → 2Cr = +12 → Cr = +6.","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidation state of Mn in KMnO₄:","o":["+4","+6","+7","+2"],"a":2,"e":"KMnO₄: K(+1) + Mn + 4O(-2) = 0 → Mn = +7. KMnO₄ is strong oxidizing agent.","ch":"Redox","tag":"Must Do"},
+        {"q":"Reducing agent:","o":["Gets oxidized (gives electrons)","Gets reduced","Gains oxygen","Loses hydrogen"],"a":0,"e":"Reducing agent: gets oxidized itself (loses electrons / given electrons to oxidizing agent).","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidizing agent:","o":["Gets oxidized","Gets reduced (accepts electrons)","Loses oxygen","Gives hydrogen"],"a":1,"e":"Oxidizing agent: gets reduced itself (gains electrons from reducing agent).","ch":"Redox","tag":"Must Do"},
+        {"q":"Disproportionation reaction:","o":["Both oxidation and reduction of same element","Only oxidation","Only reduction","No change in OS"],"a":0,"e":"Disproportionation: same element simultaneously oxidized and reduced. e.g. Cl₂ + NaOH → NaCl + NaOCl.","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidation state of S in H₂SO₄:","o":["+2","+4","+6","-2"],"a":2,"e":"H₂SO₄: 2(+1) + S + 4(-2) = 0 → S = +6.","ch":"Redox","tag":"Must Do"},
+        {"q":"Oxidation state of N in HNO₃:","o":["+3","+5","-3","0"],"a":1,"e":"HNO₃: +1 + N + 3(-2) = 0 → N = +5. In NH₃: N = -3. In N₂: N = 0.","ch":"Redox","tag":"Must Do"},
+        {"q":"Electrochemical series arranges metals by:","o":["Atomic number","Reducing power (standard electrode potential)","Atomic mass","Reactivity with water"],"a":1,"e":"Electrochemical series: metals in order of standard electrode potential E°. Higher up = better reducing agent.","ch":"Redox","tag":"Must Do"},
+        {"q":"Raoult's law states for volatile solvents:","o":["P_solution = x_solvent × P°_solvent","P_solution = P°_solvent","P_solution > P°","P = nRT/V"],"a":0,"e":"Raoult's law: P = x_A × P°_A (for ideal solutions). Vapor pressure proportional to mole fraction.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Vapor pressure of solution is _____ pure solvent:","o":["Greater than","Less than (elevation by non-volatile solute)","Equal to","Variable"],"a":1,"e":"Adding non-volatile solute lowers vapor pressure (colligative property).","ch":"Solutions","tag":"Must Do"},
+        {"q":"Boiling point elevation ΔTb = ","o":["Kf × m","Kb × m","Kb/m","Kf/m"],"a":1,"e":"ΔTb = Kb × m (molality). Kb for water = 0.52 K·kg/mol. Colligative property.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Freezing point depression ΔTf = ","o":["Kf × m","Kb × m","Kf/m","Kf + m"],"a":0,"e":"ΔTf = Kf × m. Kf for water = 1.86 K·kg/mol. Used to find molar mass.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Osmotic pressure π = ","o":["nRT/V","CRT (C=molarity)","nR/T","n/VRT"],"a":1,"e":"π = CRT = nRT/V. Van't Hoff equation. Osmosis: solvent moves from low to high concentration.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Which colligative property is used to find molar mass of polymer?","o":["Boiling point elevation","Osmotic pressure (most sensitive)","Freezing point depression","Vapor pressure"],"a":1,"e":"Osmotic pressure is most sensitive colligative property — used for large molecules (polymers).","ch":"Solutions","tag":"Must Do"},
+        {"q":"Van't Hoff factor i for NaCl in solution:","o":["1","2 (Na⁺ + Cl⁻)","0.5","3"],"a":1,"e":"i = particles after dissociation/particles before. NaCl → Na⁺ + Cl⁻ → i = 2.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Henry's law: solubility of gas ∝","o":["Temperature","Partial pressure of gas above solution","Volume","Molarity"],"a":1,"e":"Henry's law: dissolved gas amount ∝ partial pressure above solution. KH × p = concentration.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Ideal solution:","o":["Shows positive deviation from Raoult's law","Shows negative deviation","Follows Raoult's law exactly","Has infinite boiling point"],"a":2,"e":"Ideal solution: follows Raoult's law. ΔHmix = 0, ΔVmix = 0. e.g. benzene-toluene.","ch":"Solutions","tag":"Must Do"},
+        {"q":"Azeotrope is:","o":["Pure compound","Mixture that boils at constant temperature (same composition as vapor)","Solid mixture","Immiscible mixture"],"a":1,"e":"Azeotrope: mixture that distills without change in composition. Cannot be separated by simple distillation.","ch":"Solutions","tag":"Should Do"},
+        {"q":"Cell EMF = E°(cathode) - E°(anode) =","o":["E°red(cathode) - E°red(anode)","E°red(anode) - E°red(cathode)","E°ox + E°red","None"],"a":0,"e":"E°cell = E°red(cathode) - E°red(anode). Positive E°cell → spontaneous. Negative → non-spontaneous.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Faraday's first law of electrolysis:","o":["Mass deposited ∝ current²","Mass deposited ∝ quantity of charge (m = ZQ = ZIt)","Mass = moles","Mass ∝ time only"],"a":1,"e":"Faraday's 1st law: m = ZIt. Z = electrochemical equivalent. m ∝ Q = It.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Faraday's constant F = ","o":["96500 C/mol","96500 J","6.02×10²³","1 A·s"],"a":0,"e":"F = 96500 C/mol = 1 mole of electrons charge. F = NAe = 6.02×10²³ × 1.6×10⁻¹⁹.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Nernst equation: E = E° - (RT/nF)lnQ or at 25°C: E = E° - ","o":["(0.0592/n)lnQ","0.0592lnQ","(nF/RT)lnQ","(RT/nF)×E°"],"a":0,"e":"Nernst: E = E° - (0.0592/n)log Q at 25°C. Used to find cell EMF at non-standard conditions.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"At cathode in electrolysis:","o":["Oxidation occurs","Reduction occurs (cations reduced)","No reaction","Anions go"],"a":1,"e":"Cathode: reduction (gain of electrons). Anode: oxidation (loss of electrons). CathoRed, AnOxide.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Standard hydrogen electrode (SHE) E° = ","o":["1 V","−1 V","0 V (reference)","0.76 V"],"a":2,"e":"SHE = standard hydrogen electrode. E° = 0.000 V by convention. Used as reference.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Kohlrausch's law: conductance at infinite dilution =","o":["Sum of λ⁰ of all ions independently","Product of λ⁰","λ⁰ of cation only","Average of all ions"],"a":0,"e":"Kohlrausch: Λ°m = Σλ⁰cation + Σλ⁰anion. Each ion contributes independently.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Relation between ΔG° and E°cell:","o":["ΔG° = nFE°","ΔG° = −nFE°","ΔG° = nFE°/RT","ΔG° = E°/nF"],"a":1,"e":"ΔG° = -nFE°. Spontaneous (E°>0) means ΔG°<0. n = electrons transferred.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Conductivity of electrolyte solution increases with:","o":["Decreasing concentration (infinite dilution → max)","Increasing concentration always","Decreasing temperature","Increasing viscosity"],"a":0,"e":"Molar conductivity increases with dilution (more ions free to move). At infinite dilution = Λ°m.","ch":"Electrochemistry","tag":"Must Do"},
+        {"q":"Periodic law (modern) states properties are periodic function of:","o":["Atomic mass","Atomic number (Moseley)","Atomic radius","Electronegativity"],"a":1,"e":"Modern periodic law (Moseley): properties are periodic function of atomic number.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Ionization energy trend across period (left to right):","o":["Decreases","Increases generally","Stays constant","Random"],"a":1,"e":"IE increases across period (left to right) — smaller size, more nuclear charge, harder to remove e⁻.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Atomic radius trend across period (left to right):","o":["Increases","Decreases (more nuclear charge pulls electrons in)","Stays constant","Random"],"a":1,"e":"Atomic radius decreases across period — increasing nuclear charge without change in shell → electrons pulled in.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Electronegativity trend down a group:","o":["Increases","Decreases (more shielding, larger radius)","Stays constant","Random"],"a":1,"e":"EN decreases down group — larger atoms, more shielding, electrons shared less tightly.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Noble gases are in which group?","o":["Group 1","Group 17","Group 18","Group 16"],"a":2,"e":"Noble gases (He, Ne, Ar, Kr, Xe, Rn) in Group 18. Have complete outermost shell.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Alkali metals are in:","o":["Group 2","Group 1 (Li, Na, K, Rb, Cs, Fr)","Group 17","Group 18"],"a":1,"e":"Alkali metals = Group 1. Lose 1 electron easily. Most reactive metals.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Halogens are in:","o":["Group 16","Group 17 (F, Cl, Br, I, At)","Group 18","Group 1"],"a":1,"e":"Halogens = Group 17. Most reactive non-metals. Gain 1 electron → -1 ion.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Diagonal relationship exists between:","o":["Li-Mg, Be-Al, B-Si","Na-K, Mg-Ca","F-Cl, Cl-Br","None"],"a":0,"e":"Diagonal relationship: Li↔Mg, Be↔Al, B↔Si. Similar properties due to similar charge/size ratio.","ch":"Periodic Table","tag":"Should Do"},
+        {"q":"Electron affinity is energy released when:","o":["Electron removed from atom","Electron added to neutral gaseous atom","Ion formed in solution","Covalent bond formed"],"a":1,"e":"Electron affinity = energy released when 1 electron added to neutral gaseous atom. F > Cl > Br > I.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Which has maximum IE₁?","o":["Na","Mg","Al","He"],"a":3,"e":"He (noble gas, completely filled shell) has maximum first ionization energy. Hardest to remove e⁻.","ch":"Periodic Table","tag":"Must Do"},
+        {"q":"Alkali metals react with water to form:","o":["Metal oxide + H₂","Metal hydroxide + H₂","Metal hydride","Metal carbonate"],"a":1,"e":"2Na + 2H₂O → 2NaOH + H₂↑. Alkali metals react vigorously with water.","ch":"s-Block Elements","tag":"Must Do"},
+        {"q":"Gypsum is:","o":["CaSO₄","CaSO₄·2H₂O","CaSO₄·½H₂O","Ca(OH)₂"],"a":1,"e":"Gypsum = CaSO₄·2H₂O. Plaster of Paris = CaSO₄·½H₂O. Used in construction.","ch":"s-Block Elements","tag":"Must Do"},
+        {"q":"Sodium carbonate (soda ash) formula:","o":["Na₂CO₃·10H₂O (washing soda)","Na₂CO₃ (soda ash)","NaHCO₃","NaOH"],"a":1,"e":"Na₂CO₃ = soda ash. Na₂CO₃·10H₂O = washing soda. NaHCO₃ = baking soda.","ch":"s-Block Elements","tag":"Must Do"},
+        {"q":"Baking soda is:","o":["Na₂CO₃","NaHCO₃ (sodium bicarbonate)","NaOH","Na₂SO₄"],"a":1,"e":"Baking soda = NaHCO₃ (sodium bicarbonate). Releases CO₂ when heated. Used in cooking.","ch":"s-Block Elements","tag":"Must Do"},
+        {"q":"Shape of BF₃:","o":["Pyramidal","Linear","Trigonal planar (sp²)","Tetrahedral"],"a":2,"e":"BF₃: sp² hybridized boron, 3 bond pairs, no lone pairs → trigonal planar, 120°.","ch":"p-Block Elements","tag":"Must Do"},
+        {"q":"PCl₅ structure:","o":["Tetrahedral","Trigonal bipyramidal (sp³d)","Octahedral","Linear"],"a":1,"e":"PCl₅: sp³d hybridization → trigonal bipyramidal. 3 equatorial + 2 axial bonds.","ch":"p-Block Elements","tag":"Must Do"},
+        {"q":"Ozone layer is in:","o":["Troposphere","Stratosphere","Mesosphere","Thermosphere"],"a":1,"e":"Ozone layer in stratosphere (~15-35 km altitude). Absorbs UV-B and UV-C radiation.","ch":"p-Block Elements","tag":"Must Do"},
+        {"q":"Bleaching powder is:","o":["Ca(OCl)₂","CaOCl₂ (mixed salt of Ca)","CaCl₂","Ca(OH)₂"],"a":1,"e":"Bleaching powder = CaOCl₂ (mixed salt: Ca(OH)Cl + Ca(OCl)₂ mixture). Used for disinfection.","ch":"p-Block Elements","tag":"Must Do"},
+        {"q":"d-block elements are called transition metals because they:","o":["Are hard metals","Connect s and p blocks (partially filled d orbitals)","Have variable valency only","Are all magnetic"],"a":1,"e":"d-block: electrons in d orbitals. Located between s-block and p-block. Have partially filled d orbitals.","ch":"d-Block Elements","tag":"Must Do"},
+        {"q":"Variable oxidation states in transition metals are due to:","o":["Large size","Presence of d electrons (easy to lose varying number)","High EN","Metallic bonding"],"a":1,"e":"d electrons have similar energies → varying numbers can be used for bonding → variable OS.","ch":"d-Block Elements","tag":"Must Do"},
+        {"q":"Catalyst used in Haber process (N₂+3H₂→2NH₃):","o":["V₂O₅","Platinum","Iron (with K₂O, Al₂O₃ as promoters)","Nickel"],"a":2,"e":"Haber process catalyst = Iron (Fe) with promoters K₂O (increases activity) and Al₂O₃ (increases surface area).","ch":"d-Block Elements","tag":"Must Do"},
+        {"q":"KMnO₄ color is due to:","o":["Metal d-d transition","Charge transfer (MnO₄⁻ is deep purple)","Ligand field","Electronic configuration"],"a":1,"e":"KMnO₄ is deep purple. Color due to charge transfer (ligand to metal). Mn⁷⁺ has d⁰, so no d-d transition.","ch":"d-Block Elements","tag":"Should Do"},
+        {"q":"Coordination number is:","o":["Oxidation state of metal","Number of ligands directly bonded to central metal","Number of outer sphere ligands","Total charge"],"a":1,"e":"Coordination number = number of donor atoms of ligands directly bonded to central metal ion.","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"EDTA is:","o":["Monodentate ligand","Bidentate ligand","Hexadentate ligand","Unidentate ligand"],"a":2,"e":"EDTA (ethylenediaminetetraacetate) is hexadentate — donates 6 electron pairs. Most common chelating agent.","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"According to IUPAC, in complex: [Co(NH₃)₆]Cl₃, oxidation state of Co:","o":["+1","+2","+3","+6"],"a":2,"e":"[Co(NH₃)₆]³⁺: NH₃ neutral, 3 Cl⁻ outside → Co = +3.","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"Chelate effect refers to:","o":["Color of complex","Extra stability due to ring formation by polydentate ligands","Magnetic properties","Isomerism"],"a":1,"e":"Chelate effect: polydentate ligands form ring structures with metal → extra stability (entropy driven).","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"Spectrochemical series: ligands arranged by:","o":["Charge","Ability to cause crystal field splitting (weak→strong)","Denticity","Molecular weight"],"a":1,"e":"Spectrochemical series: I⁻ < Br⁻ < Cl⁻ < F⁻ < OH⁻ < H₂O < py < NH₃ < en < CN⁻ < CO (weak→strong).","ch":"Coordination Compounds","tag":"Should Do"},
+        {"q":"Isomers of [Co(NH₃)₄Cl₂]⁺ are:","o":["Optical isomers","cis and trans isomers (geometric)","Linkage isomers","Ionization isomers"],"a":1,"e":"[Co(NH₃)₄Cl₂]⁺ exists as cis (Cl on same side) and trans (Cl opposite) geometric isomers.","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"Central metal ion + ligands = ","o":["Complex ion","Salt","Covalent compound","Ionic compound"],"a":0,"e":"Central metal ion surrounded by ligands = complex ion. Together with counter ion = coordination compound.","ch":"Coordination Compounds","tag":"Must Do"},
+        {"q":"Werner's theory: primary valence of central atom =","o":["Coordination number","Oxidation state (ionic valence)","Total ligand charge","None"],"a":1,"e":"Werner: primary valence = oxidation state (satisfied by anions). Secondary valence = coordination number.","ch":"Coordination Compounds","tag":"Should Do"},
+        {"q":"Carbon is tetravalent because:","o":["It has 4 electrons in outermost shell","It forms 4 bonds","Both","Neither"],"a":2,"e":"Carbon (Z=6): configuration 1s²2s²2p² → 4 outer electrons → 4 bonds → tetravalent.","ch":"GOC","tag":"Must Do"},
+        {"q":"sp³ hybridization gives:","o":["Linear shape","Trigonal planar","Tetrahedral (109.5°)","Octahedral"],"a":2,"e":"sp³: 1 s + 3 p orbitals → 4 hybrid orbitals → tetrahedral, 109.5°. e.g. CH₄, CCl₄.","ch":"GOC","tag":"Must Do"},
+        {"q":"sp² hybridization in:","o":["Methane","Ethylene (C₂H₄) — double bond carbon","Ethyne","Water"],"a":1,"e":"sp²: 1s + 2p → 3 hybrid + 1 unhybridized p (forms π bond). Trigonal planar, 120°.","ch":"GOC","tag":"Must Do"},
+        {"q":"Inductive effect is:","o":["Through space effect","Permanent electron displacement through sigma bonds","Resonance effect","Electromeric effect"],"a":1,"e":"Inductive effect: permanent displacement of σ-bond electrons due to electronegativity difference.","ch":"GOC","tag":"Must Do"},
+        {"q":"+I groups (electron donating by inductive effect):","o":["NO₂, CN","Alkyl groups (CH₃, C₂H₅ etc.)","Halogens","COOH, CHO"],"a":1,"e":"+I groups: alkyl groups (CH₃ > C₂H₅ > tertiary). -I groups: NO₂, CN, COOH, halogens.","ch":"GOC","tag":"Must Do"},
+        {"q":"Resonance effect (mesomeric effect) is transmitted through:","o":["Sigma bonds only","Pi bonds (conjugated system)","Space","Hydrogen bonds"],"a":1,"e":"Resonance: electron delocalization through pi bonds and lone pairs in conjugated systems.","ch":"GOC","tag":"Must Do"},
+        {"q":"SN1 reaction proceeds via:","o":["Backside attack, one step","Carbocation intermediate (2 steps)","Free radical","E1cb mechanism"],"a":1,"e":"SN1: slow ionization → carbocation → fast nucleophile attack. 1st order. Favored by 3° substrates.","ch":"GOC","tag":"Must Do"},
+        {"q":"SN2 reaction:","o":["Via carbocation","One step backside attack with inversion of configuration","2-step with retention","Free radical"],"a":1,"e":"SN2: one-step bimolecular. Backside attack → Walden inversion. 2nd order. Favored by 1° substrates.","ch":"GOC","tag":"Must Do"},
+        {"q":"Markovnikov's rule: in addition of HX to alkene, H adds to carbon with:","o":["Less H atoms","More H atoms (more substituted → more stable carbocation)","Equal H atoms","None"],"a":1,"e":"Markovnikov: H adds to C with more H atoms (less substituted). Halide goes to more substituted C.","ch":"GOC","tag":"Must Do"},
+        {"q":"Electrophile is:","o":["Electron pair donor","Electron pair acceptor (attacks electron-rich site)","Nucleophile","Free radical"],"a":1,"e":"Electrophile (electro=electron, phile=loving): accepts electron pair. e.g. H⁺, NO₂⁺, Br⁺, AlCl₃.","ch":"GOC","tag":"Must Do"},
+        {"q":"Nucleophile is:","o":["Electron pair acceptor","Electron pair donor (attacks electron-deficient site)","Electrophile","Carbocation"],"a":1,"e":"Nucleophile: donates electron pair. e.g. OH⁻, CN⁻, NH₃, H₂O, Br⁻. Attack C⁺ or δ+.","ch":"GOC","tag":"Must Do"},
+        {"q":"Carbocation stability: tertiary > secondary > primary because:","o":["Size","Hyperconjugation and inductive effect of alkyl groups stabilize cation","EN","Resonance only"],"a":1,"e":"3° > 2° > 1° > methyl carbocation. More alkyl groups → more hyperconjugation → more stable.","ch":"GOC","tag":"Must Do"},
+        {"q":"Alkanes are:","o":["Unsaturated","Saturated hydrocarbons (only C-C single bonds)","Aromatic","Cyclic only"],"a":1,"e":"Alkanes = saturated hydrocarbons. General formula CnH₂n+₂. Only C-C and C-H single bonds.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Alkenes have general formula:","o":["CnH₂n+₂","CnH₂n (one double bond)","CnH₂n-₂","CnHn"],"a":1,"e":"Alkenes: CnH₂n. One C=C double bond. Ethylene CH₂=CH₂ is simplest.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Alkynes have general formula:","o":["CnH₂n","CnH₂n-₂ (one triple bond)","CnH₂n+₂","CnHn"],"a":1,"e":"Alkynes: CnH₂n-₂. One C≡C triple bond. Acetylene HC≡CH is simplest. sp hybridized.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"IUPAC name of CH₃CH₂CH₃:","o":["Methane","Ethane","Propane","Butane"],"a":2,"e":"CH₃CH₂CH₃ = 3 carbons in chain = Propane.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Benzene formula:","o":["C₅H₆","C₆H₆","C₆H₁₂","C₆H₅"],"a":1,"e":"Benzene = C₆H₆. Aromatic ring. 3 C=C alternate with 3 C-C but actually delocalized.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Aromaticity requires (Hückel rule):","o":["Even electrons","4n+2 π electrons (Hückel rule)","Benzene ring only","6 bonds"],"a":1,"e":"Hückel rule: 4n+2 π electrons (n=0,1,2...). Benzene: 6π (n=1). Planar, cyclic, delocalized.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Reaction of benzene with Br₂/FeBr₃ is:","o":["Addition","Electrophilic aromatic substitution (EAS)","Free radical","Elimination"],"a":1,"e":"Benzene undergoes EAS — preserves aromaticity by substitution, not addition.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Alkanes undergo:","o":["Addition","Substitution (free radical at high T/light)","Elimination","Electrophilic"],"a":1,"e":"Alkanes: free radical substitution (halogenation with UV light). Not reactive otherwise.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Natural gas is mainly:","o":["Ethane","Methane (CH₄)","Propane","Butane"],"a":1,"e":"Natural gas = mainly methane (70-90%). Also ethane, propane, butane.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"LPG is mainly:","o":["Methane","Ethane","Propane + Butane","Octane"],"a":2,"e":"LPG (Liquefied Petroleum Gas) = mainly propane + butane mixture.","ch":"Hydrocarbons","tag":"Must Do"},
+        {"q":"Alcohols have functional group:","o":["-CHO","-OH (hydroxyl)","C=O","COOH"],"a":1,"e":"Alcohols contain -OH (hydroxyl) group. Primary: -CH₂OH. Secondary: -CHOH. Tertiary: -COH.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Aldehydes have functional group:","o":["-OH","-CHO (aldehyde/carbonyl at chain end)","C=O (inside chain)","COOH"],"a":1,"e":"Aldehydes contain -CHO group (carbonyl at end of chain). Ketones have C=O inside.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Carboxylic acids have functional group:","o":["-OH","-CHO","C=O","-COOH"],"a":3,"e":"Carboxylic acids contain -COOH group. e.g. acetic acid CH₃COOH.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Tollens' reagent (silver mirror test) tests for:","o":["Ketones","Aldehydes (oxidized, silver mirror forms)","Alcohols","Alkenes"],"a":1,"e":"Tollens' reagent (ammoniacal AgNO₃): aldehydes reduce Ag⁺ → Ag mirror. Ketones don't react.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Fehling's test is positive for:","o":["Ketones","Aliphatic aldehydes (not benzaldehyde)","Alcohols","Carboxylic acids"],"a":1,"e":"Fehling's test: aliphatic aldehydes → brick-red precipitate (Cu₂O). Ketones negative.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Ester is formed by reaction of:","o":["Two alcohols","Alcohol + carboxylic acid (esterification)","Aldehyde + alcohol","Ketone + alcohol"],"a":1,"e":"Esterification: R-OH + R'-COOH → R'-COOR + H₂O. Acid catalyzed, reversible.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Saponification is:","o":["Formation of soap","Hydrolysis of ester by base (to make soap)","Esterification","Hydrogenation"],"a":1,"e":"Saponification = base hydrolysis of ester. Fat + NaOH → soap (fatty acid salt) + glycerol.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Lucas test distinguishes:","o":["Aldehydes from ketones","Primary, secondary, tertiary alcohols","Carboxylic acids","Esters"],"a":1,"e":"Lucas test (HCl + ZnCl₂): 3° alcohol reacts instantly, 2° slowly, 1° very slowly/not at room T.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Hofmann's bromamide reaction converts:","o":["Amide → amine (lower by 1C)","Amine → amide","Carboxylic acid → amine","Ester → amine"],"a":0,"e":"Hofmann degradation: RCONH₂ + Br₂/NaOH → RNH₂. Amide loses one C → primary amine.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Cannizzaro reaction occurs in aldehydes:","o":["With α-hydrogen","Without α-hydrogen (self disproportionation)","With all aldehydes","With ketones only"],"a":1,"e":"Cannizzaro: aldehydes without α-H disproportionate (one oxidized, one reduced). e.g. HCHO → CH₃OH + HCOOH.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Aldol condensation requires:","o":["Aldehyde or ketone with α-hydrogen + base","Aldehyde without α-H","Ketone only","Acid catalyst"],"a":0,"e":"Aldol condensation: aldehyde/ketone with α-H + dilute base → β-hydroxy carbonyl compound.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Grignard reagent is:","o":["RMgX (organomagnesium halide)","Organolithium","RAlX","RZnX"],"a":0,"e":"Grignard reagent = RMgX. Made from R-X + Mg in dry ether. React with carbonyl → alcohol.","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"Reimer-Tiemann reaction gives:","o":["Phenol → Benzaldehyde","Phenol + CHCl₃/NaOH → salicylaldehyde","Toluene → benzaldehyde","None"],"a":1,"e":"Reimer-Tiemann: Phenol + CHCl₃ + NaOH → salicylaldehyde (2-hydroxybenzaldehyde).","ch":"Functional Groups","tag":"Must Do"},
+        {"q":"D-glucose formula:","o":["C₅H₁₀O₅","C₆H₁₂O₆","C₁₂H₂₂O₁₁","C₆H₁₀O₅"],"a":1,"e":"D-glucose = C₆H₁₂O₆. Aldohexose. Most important monosaccharide. Blood sugar.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Sucrose is:","o":["Monosaccharide","Disaccharide (glucose + fructose)","Polysaccharide","Amino acid"],"a":1,"e":"Sucrose = glucose + fructose. Cane sugar/table sugar. Non-reducing disaccharide.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Starch consists of:","o":["Glucose units in alpha-1,4 and 1,6 linkages","Fructose units","Galactose","Mannose"],"a":0,"e":"Starch: amylose (α-1,4 linear) + amylopectin (α-1,6 branched). Made of glucose units.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Cellulose has:","o":["α-glycosidic bonds","β-1,4-glycosidic bonds (humans cannot digest)","α-1,6 bonds","Random bonds"],"a":1,"e":"Cellulose: β-1,4-glycosidic bonds. Humans lack cellulase → cannot digest. Used as dietary fiber.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Zwitter ion (amino acid) is formed when:","o":["Only -NH₂ protonated","Only -COOH ionized","-COOH loses H⁺ and -NH₂ gains H⁺ (internal salt)","Both ionized externally"],"a":2,"e":"Zwitter ion: -COOH → -COO⁻ (loses H⁺) and -NH₂ → -NH₃⁺ (gains H⁺). Net charge = 0 at isoelectric point.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Essential fatty acids:","o":["Saturated fats","Linoleic acid, Linolenic acid (polyunsaturated, cannot be synthesized)","All fatty acids","Short chain fats"],"a":1,"e":"Essential fatty acids (EFA): linoleic (ω-6) and linolenic (ω-3) acids. Must be obtained from diet.","ch":"Biomolecules Chem","tag":"Must Do"},
+        {"q":"Teflon is:","o":["Polyethylene","Polytetrafluoroethylene (PTFE)","Polystyrene","Nylon"],"a":1,"e":"Teflon = PTFE (polytetrafluoroethylene). Non-stick. Made from CF₂=CF₂.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Nylon-6,6 is:","o":["Addition polymer","Condensation polymer (hexamethylenediamine + adipic acid)","Natural polymer","Biopolymer"],"a":1,"e":"Nylon-6,6: condensation polymer of hexamethylenediamine + adipic acid. First synthetic fibre.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Bakelite is:","o":["Thermoplastic","Thermosetting polymer (phenol + formaldehyde)","Elastomer","Natural rubber"],"a":1,"e":"Bakelite: thermosetting cross-linked polymer of phenol and formaldehyde. First synthetic plastic.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Natural rubber is polymer of:","o":["Styrene","Isoprene (2-methylbuta-1,3-diene)","Butadiene","Ethylene"],"a":1,"e":"Natural rubber = cis-polyisoprene. From latex of Hevea brasiliensis. Vulcanized with sulfur.","ch":"Polymers","tag":"Must Do"},
+        {"q":"PVC is:","o":["Polyvinyl chloride (addition polymer of vinyl chloride)","Polyvinylidene chloride","Polystyrene","Polyethylene"],"a":0,"e":"PVC = polyvinyl chloride. Addition polymer of CH₂=CHCl. Used in pipes, cables, flooring.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Addition polymer is formed by:","o":["Loss of small molecules","Direct addition of monomers (no byproduct)","Cross-linking","Both 1 and 2"],"a":1,"e":"Addition polymer: monomers add together without losing any atoms. e.g. polyethylene, PVC, polystyrene.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Vulcanization of rubber:","o":["Adds sulfur cross-links (improves strength)","Removes sulfur","Adds carbon black","Hydrogenation"],"a":0,"e":"Vulcanization: sulfur cross-links between rubber chains → stronger, more elastic, temperature resistant.","ch":"Polymers","tag":"Must Do"},
+        {"q":"Aspirin is:","o":["Acetaminophen","Acetylsalicylic acid (analgesic, antipyretic, anti-inflammatory)","Ibuprofen","Codeine"],"a":1,"e":"Aspirin = acetylsalicylic acid. Inhibits COX enzyme → reduces prostaglandins → analgesic, antipyretic.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Paracetamol (acetaminophen) is:","o":["Antibiotic","Analgesic and antipyretic","Antacid","Antiseptic"],"a":1,"e":"Paracetamol = analgesic (pain relief) + antipyretic (fever reduction). Not anti-inflammatory like aspirin.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Antacids contain:","o":["HCl","Bases (Mg(OH)₂, Al(OH)₃, NaHCO₃) to neutralize acid","Acidic compounds","Analgesics"],"a":1,"e":"Antacids = bases that neutralize excess stomach HCl. e.g. Mg(OH)₂, Al(OH)₃, CaCO₃, NaHCO₃.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Antibiotics kill or inhibit:","o":["Viruses","Bacteria","Fungi","All microbes"],"a":1,"e":"Antibiotics specifically target bacteria. They don't work against viruses. e.g. penicillin, streptomycin.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Tranquilizers are:","o":["Stimulants","Central nervous system depressants (anxiolytic, sedative)","Analgesics","Antibiotics"],"a":1,"e":"Tranquilizers (e.g. diazepam/Valium, barbiturates) depress CNS → reduce anxiety/stress.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Soap is:","o":["Ester","Sodium/potassium salt of higher fatty acid","Free fatty acid","Glycerol"],"a":1,"e":"Soap = sodium salt (hard soap) or potassium salt (soft soap) of higher fatty acids (palmitate, stearate).","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Detergents are:","o":["Same as soaps","Sodium salts of alkylbenzenesulfonic acid (work in hard water)","Esters","Fatty acids"],"a":1,"e":"Detergents = synthetic surfactants. Work in hard water (soap forms scum with Ca²⁺, Mg²⁺).","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Disinfectants vs antiseptics:","o":["Both used on living tissue","Disinfectants on non-living (floors, instruments), antiseptics on living tissue","Both on non-living","Same thing"],"a":1,"e":"Antiseptics: safe for living tissue (wounds). Disinfectants: stronger, only non-living surfaces.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Chloroform (CHCl₃) is used as:","o":["Antiseptic","Anesthetic (historical) and solvent","Analgesic","Antacid"],"a":1,"e":"Chloroform: historically used as anesthetic. Now used as solvent in organic chemistry.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        {"q":"Saccharin is:","o":["Natural sweetener","First synthetic sweetener (300× sweeter than sugar)","Vitamin","Protein"],"a":1,"e":"Saccharin = first artificial sweetener, ~300× sweeter than sugar. No caloric value. Used by diabetics.","ch":"Chemistry in Everyday Life","tag":"Must Do"},
+        ];
+
+        const all_questions = [...bio_questions, ...phy_questions, ...chem_questions];
+
+        document.getElementById('stats-display').textContent = `Biology: ${bio_questions.length} | Physics: ${phy_questions.length} | Chemistry: ${chem_questions.length} | Total: ${all_questions.length}`;
+
+        const container = document.getElementById('questions-container');
+        let currentFilter = 'all';
+
+        function renderQuestions() {
+            container.innerHTML = '';
+            
+            // Render Biology Header
+            const bioHeader = document.createElement('div');
+            bioHeader.className = 'section-header';
+            bioHeader.dataset.section = 'biology';
+            bioHeader.innerHTML = `<h2>Biology Section</h2><p>${bio_questions.length} Questions</p>`;
+            container.appendChild(bioHeader);
+
+            all_questions.forEach((q, qIndex) => {
+                if (qIndex === bio_questions.length) {
+                    // Render Physics Header
+                    const phyHeader = document.createElement('div');
+                    phyHeader.className = 'section-header';
+                    phyHeader.dataset.section = 'physics';
+                    phyHeader.innerHTML = `<h2>Physics Section</h2><p>${phy_questions.length} Questions</p>`;
+                    container.appendChild(phyHeader);
+                }
+                
+                if (qIndex === bio_questions.length + phy_questions.length) {
+                    // Render Chemistry Header
+                    const chemHeader = document.createElement('div');
+                    chemHeader.className = 'section-header';
+                    chemHeader.dataset.section = 'chemistry';
+                    chemHeader.innerHTML = `<h2>Chemistry Section</h2><p>${chem_questions.length} Questions</p>`;
+                    container.appendChild(chemHeader);
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.dataset.index = qIndex;
+                
+                let sectionType = 'biology';
+                if (qIndex >= bio_questions.length && qIndex < bio_questions.length + phy_questions.length) {
+                    sectionType = 'physics';
+                } else if (qIndex >= bio_questions.length + phy_questions.length) {
+                    sectionType = 'chemistry';
+                }
+                card.dataset.section = sectionType;
+
+                card.style.animationDelay = `${(qIndex % 10) * 0.05}s`;
+                
+                const tagClass = q.tag.toLowerCase().includes('must') ? 'tag-must' : 'tag-should';
+
+                let optionsHtml = q.o.map((opt, oIndex) => `
+                    <div class="option" data-idx="${oIndex}" onclick="selectAnswer(${qIndex}, ${oIndex}, this)">
+                        ${String.fromCharCode(65 + oIndex)}. ${opt}
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="meta-info">
+                        <span class="q-number">Question ${qIndex + 1} of ${all_questions.length}</span>
+                        <div class="meta-group">
+                            <span class="badge chapter">${q.ch}</span>
+                            <span class="badge ${tagClass}">${q.tag}</span>
+                        </div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options" id="options-${qIndex}">
+                        ${optionsHtml}
+                    </div>
+                    <div class="explanation" id="exp-${qIndex}">
+                        <div class="explanation-title">Explanation</div>
+                        ${q.e}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            applyFilter();
+        }
+
+        function applyFilter() {
+            const items = container.querySelectorAll('.question-card, .section-header');
+            items.forEach(item => {
+                if (currentFilter === 'all' || item.dataset.section === currentFilter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.target;
+                applyFilter();
+            });
+        });
+
+        window.selectAnswer = function(qIndex, oIndex, element) {
+            const q = all_questions[qIndex];
+            const optionsContainer = document.getElementById(`options-${qIndex}`);
+            const options = optionsContainer.querySelectorAll('.option');
+            const explanation = document.getElementById(`exp-${qIndex}`);
+            
+            if (options[0].classList.contains('answered')) return; // Already answered
+            
+            options.forEach(opt => opt.classList.add('answered'));
+            
+            if (oIndex === q.a) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                options[q.a].classList.add('correct');
+            }
+            
+            explanation.classList.add('visible');
+        };
+
+        document.getElementById('reveal-all').addEventListener('click', () => {
+            all_questions.forEach((q, qIndex) => {
+                const optionsContainer = document.getElementById(`options-${qIndex}`);
+                const options = optionsContainer.querySelectorAll('.option');
+                const explanation = document.getElementById(`exp-${qIndex}`);
+                
+                if (!options[0].classList.contains('answered')) {
+                    options.forEach(opt => opt.classList.add('answered'));
+                    options[q.a].classList.add('correct');
+                    explanation.classList.add('visible');
+                }
+            });
+        });
+
+        document.getElementById('reset-all').addEventListener('click', renderQuestions);
+
+        // Initial render
+        renderQuestions();
+    </script>
+</body>
+</html>
